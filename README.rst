@@ -18,7 +18,7 @@ DIALS Regression Data
         :target: https://pypi.org/project/dials_data/
         :alt: Supported Python versions
 
-.. image:: https://pyup.io/repos/github/dials/data.svg
+.. image:: https://pyup.io/repos/github/dials/data/python-3-shield.svg
         :target: https://pyup.io/repos/github/dials/data/
         :alt: Python 3 ready
 
