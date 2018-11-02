@@ -28,5 +28,5 @@ deploy:
     secure: lPz5OabrKGY/TqhdGRlObnFfnjZQdySV98V83vRQGBoIZKbyhHsWYxHM0dVwKe7LbiyWhYwE40LW0nureUridJ8LB5uqvJuS7drWsQV4XJpoqPGDgxK2/P0UWCHzSz4coTSBNT8/dl8Xg8rEjs7GBZnQQrAv8BV0PzkVhVQZz+3dGQfSjveeX2S0xR10u2JwHQ+jSHBmIxN7PCNBjcnWLKZaB4qL2ct4zhJK8LgIrOBcoEN+XmYxox/Ip1NfKhAbrVQIMXJ5McsuImn5DeJgr7ZHvyb0KcpeUB86SzFUCFW4RPOE6s4s2CPILZabZ+HvHU3JUI64Dx+kQLjNZoUWDWdXPwXW0WHV8HbSyj6lfRSsvjCNz3hZOlrFypRzlw4beZJaoDHQqT7KJaVwVU0IlbyilDxq5GmK7qQPpbKPBz95KMB6lMFKoCgBwnknsdjen0jVYymvHI1K9YPsOsvbb3HaK29gq6aP5cb6eJS37/M6Eo0E0rHnglG/aUBK1FN9m/WNBeWTTxbvujsYxodjWcoF0S24rC2L/0cKCUNji3Q1VFevg1rouprlCz28mFAn0bLG2FLsqakaQOWcj/DhPYBVXIeruce5RggKXGWr1dow20kAYdpZ/ib0tTC+5nR6JyBZF7ZlLJRty+YuLnPzG9pVdiO/Vpo01o8Qqk+138M=
   on:
     tags: true
-    repo: dials/dials_data
+    repo: dials/data
     python: 3.7
