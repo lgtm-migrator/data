@@ -1,0 +1,32 @@
+language: python
+
+matrix:
+  include:
+    - python: 3.7
+      dist: xenial
+      sudo: true
+    - python: 3.6
+    - python: 3.5
+    - python: 3.4
+    - python: 2.7
+
+# Command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
+install: pip install -U tox-travis
+
+# Command to run tests, e.g. python setup.py test
+script: tox
+
+# Assuming you have installed the travis-ci CLI tool, after you
+# create the Github repo and add it to Travis, run the
+# following command to finish PyPI deployment setup:
+# $ travis encrypt --pro --add deploy.password
+deploy:
+  provider: pypi
+  distributions: sdist bdist_wheel
+  user: mgerstel
+  password:
+    secure: PLEASE_REPLACE_ME
+  on:
+    tags: true
+    repo: dials/dials_data
+    python: 3.7
