@@ -2,16 +2,25 @@
 DIALS Regression Data
 =====================
 
-.. image:: https://img.shields.io/pypi/v/data.svg
-        :target: https://pypi.python.org/pypi/data
+.. image:: https://img.shields.io/pypi/v/dials_data.svg
+        :target: https://pypi.python.org/pypi/dials_data
+        :alt: PyPI release
 
-.. image:: https://img.shields.io/travis/pro/dials/data.svg
+.. image:: https://travis-ci.com/dials/data.svg?branch=master
         :target: https://travis-ci.com/dials/data
+        :alt: Build status
 
 .. image:: https://pyup.io/repos/github/dials/data/shield.svg
-     :target: https://pyup.io/repos/github/dials/data/
-     :alt: Updates
+        :target: https://pyup.io/repos/github/dials/data/
+        :alt: Updates
 
+.. image:: https://img.shields.io/pypi/pyversions/dials_data.svg
+        :target: https://pypi.org/project/dials_data/
+        :alt: Supported Python versions
+
+.. image:: https://pyup.io/repos/github/dials/data.svg
+        :target: https://pyup.io/repos/github/dials/data/
+        :alt: Python 3 ready
 
 
 * Free software: BSD license
