@@ -3,5 +3,6 @@
 
 import dials_data
 
+
 def test_testing_framework():
-  assert dials_data.__version__
+    assert dials_data.__version__

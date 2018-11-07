@@ -22,6 +22,9 @@ DIALS Regression Data
         :target: https://pyup.io/repos/github/dials/data/
         :alt: Python 3 ready
 
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+        :target: https://github.com/ambv/black
+        :alt: Code style: black
 
 * Free software: BSD license
 
