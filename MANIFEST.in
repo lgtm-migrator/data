@@ -2,6 +2,8 @@ include CONTRIBUTING.rst
 include LICENSE
 include README.rst
 
+include dials_data/definitions/*.yml
+
 recursive-include tests *
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]
