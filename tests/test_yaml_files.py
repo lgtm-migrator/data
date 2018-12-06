@@ -2,24 +2,33 @@ from __future__ import absolute_import, division, print_function
 
 import pkg_resources
 import pytest
+import string
 import yaml
 
 definition_yamls = [
-    "definitions/" + fn
+    fn
     for fn in pkg_resources.resource_listdir("dials_data", "definitions")
     if fn.endswith(".yml")
 ]
 hashinfo_yamls = [
-    "hashinfo/" + fn
+    fn
     for fn in pkg_resources.resource_listdir("dials_data", "hashinfo")
     if fn.endswith(".yml")
 ]
 
 
+def is_valid_name(filename):
+    if not filename.endswith(".yml") or len(filename) <= 4:
+        return False
+    allowed_characters = frozenset(string.ascii_letters + string.digits + "_")
+    return all(c in allowed_characters for c in filename[:-4])
+
+
 @pytest.mark.parametrize("yaml_file", definition_yamls)
 def test_yaml_file_is_valid_definition(yaml_file):
+    assert is_valid_name(yaml_file)
     definition = yaml.load(
-        pkg_resources.resource_stream("dials_data", yaml_file).read()
+        pkg_resources.resource_stream("dials_data", "definitions/" + yaml_file).read()
     )
     fields = set(definition)
     required = set(("name", "data", "description"))
@@ -34,4 +43,7 @@ def test_yaml_file_is_valid_definition(yaml_file):
 
 @pytest.mark.parametrize("yaml_file", hashinfo_yamls)
 def test_yaml_file_is_valid_hashinfo(yaml_file):
-    assert yaml.load(pkg_resources.resource_stream("dials_data", yaml_file).read())
+    assert is_valid_name(yaml_file)
+    assert yaml.load(
+        pkg_resources.resource_stream("dials_data", "hashinfo/" + yaml_file).read()
+    )
