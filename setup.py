@@ -32,6 +32,12 @@ setup(
         "Programming Language :: Python :: 3.7",
     ],
     description="Python Boilerplate contains all the boilerplate you need to create a Python package.",
+    entry_points={
+        "console_scripts": [
+            "dials_data.show = dials_data.datasets:show_known_definitions"
+        ],
+        "libtbx.dispatcher.script": ["dials_data.show = dials_data.show"],
+    },
     install_requires=requirements,
     license="BSD license",
     long_description=readme,

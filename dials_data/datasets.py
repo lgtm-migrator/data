@@ -37,3 +37,24 @@ for definition_file in pkg_resources.resource_listdir("dials_data", "definitions
         except IOError:
             fileinfo_dirty.add(dataset_name)
             continue
+
+
+def show_known_definitions():
+    for ds in sorted(definition):
+        print(
+            (
+                "{dsname} - {fullname}:\n"
+                + "    {author} ({license}) {url}\n"
+                + "    {description}"
+            ).format(
+                dsname=ds,
+                fullname=definition[ds]["name"],
+                author=definition[ds].get("author", "unknown author"),
+                license=definition[ds].get("license", "unknown license"),
+                url=definition[ds].get("url", ""),
+                description=definition[ds]["description"].strip(),
+            )
+        )
+        if ds in fileinfo_dirty:
+            print("(currently not available)")
+        print()
