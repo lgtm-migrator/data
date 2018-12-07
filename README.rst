@@ -6,6 +6,9 @@ DIALS Regression Data
         :target: https://pypi.python.org/pypi/dials_data
         :alt: PyPI release
 
+.. image:: https://img.shields.io/pypi/l/dials_data.svg
+        :alt: BSD license
+
 .. image:: https://travis-ci.com/dials/data.svg?branch=master
         :target: https://travis-ci.com/dials/data
         :alt: Build status
@@ -25,8 +28,6 @@ DIALS Regression Data
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
         :target: https://github.com/ambv/black
         :alt: Code style: black
-
-* Free software: BSD license
 
 Credits
 -------
