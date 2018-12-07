@@ -31,7 +31,7 @@ setup(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
     ],
-    description="Python Boilerplate contains all the boilerplate you need to create a Python package.",
+    description="DIALS Regression Data manager",
     entry_points={
         "console_scripts": ["dials.data = dials_data.cli:main"],
         "libtbx.dispatcher.script": ["dials.data = dials.data"],
