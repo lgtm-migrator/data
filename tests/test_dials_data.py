@@ -13,3 +13,10 @@ def test_all_datasets_can_be_parsed():
     import dials_data.datasets
 
     assert dials_data.datasets.definition
+
+
+def test_repository_location():
+    import dials_data.datasets
+
+    rl = dials_data.datasets.repository_location()
+    assert rl.check(dir=1)
