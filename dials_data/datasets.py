@@ -39,8 +39,11 @@ for definition_file in pkg_resources.resource_listdir("dials_data", "definitions
             continue
 
 
-def show_known_definitions():
-    for ds in sorted(definition):
+def show_known_definitions(ds_list, quiet=False):
+    for ds in sorted(ds_list):
+        if quiet:
+            print(ds)
+            continue
         print(
             (
                 "{dsname} - {fullname}:\n"
@@ -58,3 +61,21 @@ def show_known_definitions():
         if ds in fileinfo_dirty:
             print("(currently not available)")
         print()
+
+
+def cli_show(cmd_args):
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Show dataset information")
+    parser.add_argument(
+        "--missing-fileinfo",
+        action="store_true",
+        help="only show datasets that do not have a bill of material",
+    )
+    parser.add_argument("--quiet", action="store_true", help="machine readable output")
+    args = parser.parse_args(cmd_args)
+    if args.missing_fileinfo:
+        ds_list = fileinfo_dirty
+    else:
+        ds_list = definition
+    show_known_definitions(ds_list, quiet=args.quiet)

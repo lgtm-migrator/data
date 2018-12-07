@@ -19,7 +19,7 @@ setup(
     author="Markus Gerstel",
     author_email="dials-support@lists.sourceforge.net",
     classifiers=[
-        "Development Status :: 2 - Pre-Alpha",
+        "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: BSD License",
         "Natural Language :: English",
@@ -33,10 +33,8 @@ setup(
     ],
     description="Python Boilerplate contains all the boilerplate you need to create a Python package.",
     entry_points={
-        "console_scripts": [
-            "dials_data.show = dials_data.datasets:show_known_definitions"
-        ],
-        "libtbx.dispatcher.script": ["dials_data.show = dials_data.show"],
+        "console_scripts": ["dials.data = dials_data.cli:main"],
+        "libtbx.dispatcher.script": ["dials.data = dials.data"],
     },
     install_requires=requirements,
     license="BSD license",
