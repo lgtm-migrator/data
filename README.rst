@@ -7,15 +7,12 @@ DIALS Regression Data
         :alt: PyPI release
 
 .. image:: https://img.shields.io/pypi/l/dials_data.svg
+        :target: https://pypi.python.org/pypi/dials_data
         :alt: BSD license
 
 .. image:: https://travis-ci.com/dials/data.svg?branch=master
         :target: https://travis-ci.com/dials/data
         :alt: Build status
-
-.. image:: https://pyup.io/repos/github/dials/data/shield.svg
-        :target: https://pyup.io/repos/github/dials/data/
-        :alt: Updates
 
 .. image:: https://img.shields.io/pypi/pyversions/dials_data.svg
         :target: https://pypi.org/project/dials_data/
@@ -24,6 +21,10 @@ DIALS Regression Data
 .. image:: https://pyup.io/repos/github/dials/data/python-3-shield.svg
         :target: https://pyup.io/repos/github/dials/data/
         :alt: Python 3 ready
+
+.. image:: https://pyup.io/repos/github/dials/data/shield.svg
+        :target: https://pyup.io/repos/github/dials/data/
+        :alt: Updates
 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
         :target: https://github.com/ambv/black
