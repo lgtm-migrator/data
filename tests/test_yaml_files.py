@@ -7,16 +7,16 @@ import pytest
 import string
 import yaml
 
-definition_yamls = [
+definition_yamls = {
     fn
     for fn in pkg_resources.resource_listdir("dials_data", "definitions")
     if fn.endswith(".yml")
-]
-hashinfo_yamls = [
+}
+hashinfo_yamls = {
     fn
     for fn in pkg_resources.resource_listdir("dials_data", "hashinfo")
     if fn.endswith(".yml")
-]
+}
 
 
 def is_valid_name(filename):
@@ -46,6 +46,9 @@ def test_yaml_file_is_valid_definition(yaml_file):
 @pytest.mark.parametrize("yaml_file", hashinfo_yamls)
 def test_yaml_file_is_valid_hashinfo(yaml_file):
     assert is_valid_name(yaml_file)
+    assert (
+        yaml_file in definition_yamls
+    ), "hashinfo file present without corresponding definition file"
     assert yaml.load(
         pkg_resources.resource_stream("dials_data", "hashinfo/" + yaml_file).read()
     )
