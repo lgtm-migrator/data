@@ -28,9 +28,9 @@ def pytest_addoption(parser):
 @pytest.fixture(scope="session")
 def dials_data(request):
     """
-    Return the location of a regression data set as py.path object.
+    Return the location of a regression dataset as py.path object.
     Download the files if they are not on disk already.
-    Skip the test if the data set can not be downloaded.
+    Skip the test if the dataset can not be downloaded.
     """
     if not request.config.getoption("--regression"):
         pytest.skip("Test requires --regression option to run.")

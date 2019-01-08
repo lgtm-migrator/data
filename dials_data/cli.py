@@ -2,18 +2,40 @@ from __future__ import absolute_import, division, print_function
 
 import argparse
 import sys
-from .datasets import cli_show
+
+import dials_data
+import dials_data.datasets
+
+
+def cli_list(cmd_args):
+    parser = argparse.ArgumentParser(
+        description="Show dataset information", prog="dials.data list"
+    )
+    parser.add_argument(
+        "--missing-fileinfo",
+        action="store_true",
+        help="only list datasets that do not have a bill of material",
+    )
+    parser.add_argument("--quiet", action="store_true", help="machine readable output")
+    args = parser.parse_args(cmd_args)
+    if args.missing_fileinfo:
+        ds_list = dials_data.datasets.fileinfo_dirty
+    else:
+        ds_list = dials_data.datasets.definition
+    dials_data.datasets.list_known_definitions(ds_list, quiet=args.quiet)
 
 
 def main():
     parser = argparse.ArgumentParser(
         usage="dials.data <command> [<args>]",
-        description="""DIALS regression data manager
+        description="""DIALS regression data manager v{version}
 
 The most commonly used commands are:
-   show     Show available data sets
-   get      Download data sets
-""",
+   list     List available datasets
+   get      Download datasets
+""".format(
+            version=dials_data.__version__
+        ),
         formatter_class=argparse.RawTextHelpFormatter,
     )
     parser.add_argument("subcommand", help=argparse.SUPPRESS)
