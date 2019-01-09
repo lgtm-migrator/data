@@ -29,7 +29,7 @@ def is_valid_name(filename):
 @pytest.mark.parametrize("yaml_file", definition_yamls)
 def test_yaml_file_is_valid_definition(yaml_file):
     assert is_valid_name(yaml_file)
-    definition = yaml.load(
+    definition = yaml.safe_load(
         pkg_resources.resource_stream("dials_data", "definitions/" + yaml_file).read()
     )
     fields = set(definition)
@@ -49,6 +49,14 @@ def test_yaml_file_is_valid_hashinfo(yaml_file):
     assert (
         yaml_file in definition_yamls
     ), "hashinfo file present without corresponding definition file"
-    assert yaml.load(
+    hashinfo = yaml.safe_load(
         pkg_resources.resource_stream("dials_data", "hashinfo/" + yaml_file).read()
+    )
+    fields = set(hashinfo)
+    required = set(("definition", "formatversion", "verify"))
+    assert fields >= required, "Required fields missing: " + str(
+        sorted(required - fields)
+    )
+    assert fields <= required, "Unknown fields present: " + str(
+        sorted(fields - required)
     )
