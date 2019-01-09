@@ -56,11 +56,54 @@ the command line interface::
     dials.data
 
 
-Background
-----------
+How do I run tests?
+^^^^^^^^^^^^^^^^^^^
 
-Where is the regression data stored?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Tests using the ``dials_data`` package are presumably written using pytest.
+If they use the fixture provided by ``dials_data`` then you can run
+the tests with::
+
+    pytest --regression
+
+
+How do I use this in my test?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If your test is written in pytest and you use the fixture provided by
+``dials_data`` then you can use regression datasets in your test by
+adding the ``dials_data`` fixture to your test, ie::
+
+    def test_accessing_a_dataset(dials_data):
+        location = dials_data("x4wide")
+
+The fixture/variable ``dials_data`` in the test is a
+``dials_data.download.DataFetcher`` instance, which can be called with
+the name of the dataset you want to access (here: ``x4wide``). If the
+files are not present on the machine then they will be downloaded.
+If either the download fails or ``--regression`` is not specified then
+the test is skipped.
+
+The return value (``location``) is a ``py.path.local`` object pointing
+to the directory containing the requested dataset.
+
+
+How do I use this in my Python package?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Assuming you are using ``pytest`` then simply add the following to a
+file named ``conftest.py`` in the top level of your project::
+
+    import pytest
+    try:
+        from dials_data import *
+    except ImportError:
+        @pytest.fixture
+        def dials_data():
+            pytest.skip("Test requires python package dials_data")
+
+
+Where are the regression datasets stored?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In order of evaluation:
 
