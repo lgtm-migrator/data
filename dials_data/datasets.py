@@ -11,7 +11,7 @@ import py
 import textwrap
 import yaml
 
-_hashinfo_version = 1
+_hashinfo_formatversion = 1
 
 
 def _load_yml_definitions():
@@ -19,9 +19,8 @@ def _load_yml_definitions():
     Read dataset .yml files from definitions/ and hashinfo/ directories.
     This is done once during the module import stage.
     """
-    global definition, integrity, fileinfo_dirty
+    global definition, fileinfo_dirty
     definition = {}
-    integrity = {}
     fileinfo_dirty = set()
     for definition_file in pkg_resources.resource_listdir("dials_data", "definitions"):
         if definition_file.endswith(".yml"):
@@ -37,14 +36,15 @@ def _load_yml_definitions():
             if not pkg_resources.resource_exists("dials_data", h_file):
                 fileinfo_dirty.add(dataset_name)
                 continue
-            integrity[dataset_name] = yaml.safe_load(
+            hashinfo = yaml.safe_load(
                 pkg_resources.resource_stream("dials_data", h_file)
             )
             if (
-                integrity[dataset_name]["definition"]
-                != definition[dataset_name]["hash"]
-                or integrity[dataset_name]["version"] < _hashinfo_version
+                hashinfo["definition"] == definition[dataset_name]["hash"]
+                and hashinfo["formatversion"] == _hashinfo_formatversion
             ):
+                definition[dataset_name]["hashinfo"] = hashinfo
+            else:
                 fileinfo_dirty.add(dataset_name)
 
 
@@ -57,7 +57,7 @@ def create_integrity_record(dataset_name):
     """
     return {
         "definition": definition[dataset_name]["hash"],
-        "version": _hashinfo_version,
+        "formatversion": _hashinfo_formatversion,
     }
 
 
@@ -108,6 +108,22 @@ def repository_location():
         )
 
 
+def get_resident_size(ds):
+    if ds in fileinfo_dirty:
+        return 0
+    return sum(item["size"] for item in definition[ds]["hashinfo"]["verify"])
+
+
+def _human_readable(num, suffix="B"):
+    for unit in ("", "k", "M", "G"):
+        if num < 10:
+            return "%.1f%s%s" % (num, unit, suffix)
+        if num < 1024:
+            return "%3.0f%s%s" % (num, unit, suffix)
+        num /= 1024.0
+    return "%3.0f%s%s" % (num, "T", suffix)
+
+
 def list_known_definitions(ds_list, quiet=False):
     indent = " " * 4
     for shortname in sorted(ds_list):
@@ -115,11 +131,15 @@ def list_known_definitions(ds_list, quiet=False):
             print(shortname)
             continue
         dataset = definition[shortname]
-        print(
-            "{shortname}: {dataset[name]}".format(shortname=shortname, dataset=dataset)
-        )
         if shortname in fileinfo_dirty:
-            print("{indent}(unverified dataset)".format(indent=indent))
+            size_information = "unverified dataset"
+        else:
+            size_information = _human_readable(get_resident_size(shortname))
+        print(
+            "{shortname}: {dataset[name]} ({size_information})".format(
+                shortname=shortname, dataset=dataset, size_information=size_information
+            )
+        )
         print(
             "{indent}{author} ({license})".format(
                 author=dataset.get("author", "unknown author"),

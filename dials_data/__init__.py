@@ -39,7 +39,7 @@ def dials_data(request):
     def skip_test_if_lookup_failed(result):
         if not result:
             pytest.skip(
-                "Automated download of test data failed. Use dials_data_download"
+                "Automated download of test data failed. Download manually using dials.data"
             )
         return result
 

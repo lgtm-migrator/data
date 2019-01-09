@@ -12,13 +12,15 @@ def cli_list(cmd_args):
         description="Show dataset information", prog="dials.data list"
     )
     parser.add_argument(
-        "--missing-fileinfo",
+        "--missing-hashinfo",
         action="store_true",
-        help="only list datasets that do not have a bill of material",
+        help="only list datasets without file integrity information",
     )
-    parser.add_argument("--quiet", action="store_true", help="machine readable output")
+    parser.add_argument(
+        "-q", "--quiet", action="store_true", help="machine readable output"
+    )
     args = parser.parse_args(cmd_args)
-    if args.missing_fileinfo:
+    if args.missing_hashinfo:
         ds_list = dials_data.datasets.fileinfo_dirty
     else:
         ds_list = dials_data.datasets.definition
