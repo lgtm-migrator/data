@@ -2,9 +2,10 @@ from __future__ import absolute_import, division, print_function
 
 import contextlib
 import os
-import urlparse
 
 import dials_data.datasets
+from six.moves.urllib.request import urlopen
+from six.moves.urllib.parse import urlparse
 
 fcntl, msvcrt = None, None
 try:
@@ -15,13 +16,6 @@ try:
     import msvcrt
 except ImportError:
     pass
-try:
-    # For Python 3.0 and later
-    from urllib.request import urlopen
-except ImportError:
-    # Fall back to Python 2's urllib2
-    from urllib2 import urlopen
-
 
 @contextlib.contextmanager
 def _file_lock(file_handle):
@@ -129,7 +123,7 @@ def fetch_dataset(
         {
             "url": source["url"],
             "file": target_dir.join(
-                os.path.basename(urlparse.urlparse(source["url"]).path)
+                os.path.basename(urlparse(source["url"]).path)
             ),
             "verify": hashinfo,
         }

@@ -7,7 +7,7 @@ from setuptools import setup, find_packages
 with open("README.rst") as readme_file:
     readme = readme_file.read()
 
-requirements = ["pytest", "pyyaml"]
+requirements = ["pytest", "pyyaml", "six"]
 setup_requirements = []
 test_requirements = []
 
