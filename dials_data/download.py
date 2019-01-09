@@ -17,6 +17,7 @@ try:
 except ImportError:
     pass
 
+
 @contextlib.contextmanager
 def _file_lock(file_handle):
     """
@@ -122,9 +123,7 @@ def fetch_dataset(
     filelist = [
         {
             "url": source["url"],
-            "file": target_dir.join(
-                os.path.basename(urlparse(source["url"]).path)
-            ),
+            "file": target_dir.join(os.path.basename(urlparse(source["url"]).path)),
             "verify": hashinfo,
         }
         for source, hashinfo in zip(definition["data"], integrity_info["verify"])
