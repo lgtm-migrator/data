@@ -19,7 +19,7 @@ setup(
     author="Markus Gerstel",
     author_email="dials-support@lists.sourceforge.net",
     classifiers=[
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: BSD License",
         "Natural Language :: English",
@@ -31,7 +31,7 @@ setup(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
     ],
-    description="DIALS Regression Data manager",
+    description="DIALS Regression Data Manager",
     entry_points={
         "console_scripts": ["dials.data = dials_data.cli:main"],
         "libtbx.dispatcher.script": ["dials.data = dials.data"],

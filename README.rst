@@ -1,6 +1,6 @@
-=====================
-DIALS Regression Data
-=====================
+=============================
+DIALS Regression Data Manager
+=============================
 
 .. image:: https://img.shields.io/pypi/v/dials_data.svg
         :target: https://pypi.python.org/pypi/dials_data
