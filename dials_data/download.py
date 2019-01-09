@@ -2,7 +2,6 @@ from __future__ import absolute_import, division, print_function
 
 import contextlib
 import os
-import urllib2
 import urlparse
 
 import dials_data.datasets
@@ -16,6 +15,12 @@ try:
     import msvcrt
 except ImportError:
     pass
+try:
+    # For Python 3.0 and later
+    from urllib.request import urlopen
+except ImportError:
+    # Fall back to Python 2's urllib2
+    from urllib2 import urlopen
 
 
 @contextlib.contextmanager
@@ -66,7 +71,7 @@ def _download_to_file(url, pyfile):
     """
     Downloads a single URL to a file.
     """
-    with contextlib.closing(urllib2.urlopen(url)) as socket:
+    with contextlib.closing(urlopen(url)) as socket:
         file_size = int(socket.info().getheader("Content-Length"))
         # There is no guarantee that the content-length header is set
         received = 0
