@@ -58,15 +58,16 @@ if [[ ${TRAVIS_BRANCH} == update-* ]] && [[ "${TRAVIS_PULL_REQUEST}" == "false" 
     pip install -e .
 
     echo Considering updating information on dataset ${CANDIDATE}
-    for DATASET in $(dials.data show --quiet --missing-fileinfo)
+    for DATASET in $(dials.data list --quiet --missing-hashinfo)
     do
       if [[ "${DATASET}" == "${CANDIDATE}" ]]; then
-        dials.data show --quiet --missing-fileinfo | grep -- "^${DATASET}$" || { # remove on successful test run
+        dials.data list --quiet --missing-hashinfo | grep -- "^${DATASET}$" || { # remove on successful test run
           echo Sanity check failed
           exit 1
         }
         echo Updating dataset ${DATASET}
-        dials.data get ${DATASET} --create-hashinfo=hashinfo/${DATASET}.yml || exit 1
+        dials.data get --create-hashinfo ${DATASET} || exit 1
+        mv ${DATASET}.yml hashinfo/${DATASET}.yml || exit 1
         if [ -z "$(git status --porcelain)" ]; then
           echo Working directory remained clean. Something went wrong.
           exit 1
