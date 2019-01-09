@@ -5,6 +5,47 @@ import sys
 
 import dials_data
 import dials_data.datasets
+import dials_data.download
+import yaml
+
+
+def cli_get(cmd_args):
+    parser = argparse.ArgumentParser(
+        description="Download datasets", prog="dials.data get"
+    )
+    parser.add_argument("dataset", nargs="*")
+    parser.add_argument(
+        "--create-hashinfo",
+        action="store_true",
+        help="generate file integrity information for specified datasets in the current directory",
+    )
+    parser.add_argument(
+        "--verify", action="store_true", help="verify integrity of downloaded dataset"
+    )
+    args = parser.parse_args(cmd_args)
+    if args.verify and args.create_hashinfo:
+        sys.exit("Parameter --create-hashinfo can not be used with --verify")
+    if not args.dataset:
+        parser.print_help()
+        sys.exit(0)
+
+    unknown_data = set(args.dataset) - set(dials_data.datasets.definition)
+    if unknown_data:
+        sys.exit("Unknown dataset: {}".format(", ".join(unknown_data)))
+
+    repository = dials_data.datasets.repository_location()
+    print("Repository location: {repo.strpath}\n".format(repo=repository))
+
+    for ds in args.dataset:
+        print("Downloading dataset {}".format(ds))
+        hashinfo = dials_data.download.fetch_dataset(
+            ds, ignore_hashinfo=args.create_hashinfo, verify=args.verify
+        )
+        if args.create_hashinfo:
+            print("Writing file integrity information to {}.yml".format(ds))
+            with open("{}.yml".format(ds), "w") as fh:
+                yaml.dump(hashinfo, fh, default_flow_style=False)
+    print("Done")
 
 
 def cli_list(cmd_args):
