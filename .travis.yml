@@ -1,5 +1,9 @@
 language: python
 
+env:
+  global:
+    secure: cB+yVOL/QSh0nWRk0/ydxz/ConXliBMB4bRZCayZEYW9qtGtaaOFdt7VIaBxRlvrDB8/bXM5Wvo/caGO4KneQLJ3aZkjK+k7xZRypRoILXGtLrMIfK6zcznXZFPK+l+N5Mtkq0djuHjeNk7h6ptQeMMV3zeb0ZZOUACvr/Ss5cIbWpl3t03LibtC0kyudLwbCq/3KKii/S2pTQlucTgDy9qQtESEclN20AOUK9FH3ffM+tUAjAzQBWyYzMB+LKwPHMwTkHIaAjtjsMXtX95XOqL5s+XgB+aufG2JbpjTEo/ksQeTIOysHYpUILz9eYDL0vWxO7DVMUn1cWnPYijTvCQnC5NgY6yJ3pJDARZ843UHZE9GE9K71gXEMPkGBeEzqCw5zWocuSgDQ/kiSl1oHqH+SOnsgxgwmAQH5kVdO3r3KmnZTLNCKD9SNf90isANse9cCoWD0q6n9GahiKGrtVUvsUzzmVJ+z/+ZO4Zu48ie6X8LPtFpK+6LLQI8vAsn9ykqJGY2A7pF1wLkCfdzI+9nSPDbl7woaX6pvVlVrqxUefWrg/cyFzF/sbWR1X+aqbxYhvn6v8FNu1pwwyCLOc/N0szoODJCLQLHQb3CEtYmEytBJI9F46pUNJGexJQnSj1GOYgE9tmNkPsmeHnoINvCRFU2NZLfIduyvBS2mJQ=
+
 matrix:
   include:
     - python: 3.7
