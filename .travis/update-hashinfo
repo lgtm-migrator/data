@@ -44,9 +44,9 @@ if [[ "${TRAVIS_BRANCH}" == "master" ]] && [[ "${TRAVIS_PULL_REQUEST}" == "false
       git checkout -b "update-${DATASET}"
       git reset --hard master
       git commit --allow-empty -m "Trigger update of dataset ${DATASET}"
-      echo git push -f -u origin "update-${DATASET}"
+      git push -f -u origin "update-${DATASET}"
       echo create pull request
-      echo hub pull-request -f -m "Update dataset ${DATASET}"
+#     hub pull-request -f -m "Update dataset ${DATASET}"
     }
   done
 fi
@@ -66,17 +66,17 @@ if [[ ${TRAVIS_BRANCH} == update-* ]] && [[ "${TRAVIS_PULL_REQUEST}" == "false" 
           exit 1
         }
         echo Updating dataset ${DATASET}
-#       dials.data get --create-hashinfo ${DATASET} || exit 1
-#       mv ${DATASET}.yml hashinfo/${DATASET}.yml || exit 1
-#       if [ -z "$(git status --porcelain)" ]; then
-#         echo Working directory remained clean. Something went wrong.
-#         exit 1
-#       fi
-#       git add hashinfo/${DATASET}.yml || exit 1
-#       echo Committing update
-#       git commit -m "Update file information for dataset ${DATASET}" || exit 1
-#       git push || exit 1
-#       echo Success.
+        dials.data get --create-hashinfo ${DATASET} || exit 1
+        mv ${DATASET}.yml hashinfo/${DATASET}.yml || exit 1
+        if [ -z "$(git status --porcelain)" ]; then
+          echo Working directory remained clean. Something went wrong.
+          exit 1
+        fi
+        git add hashinfo/${DATASET}.yml || exit 1
+        echo Committing update
+        git commit -m "Update file information for dataset ${DATASET}" || exit 1
+        git push || exit 1
+        echo Success.
         break
       fi
     done
