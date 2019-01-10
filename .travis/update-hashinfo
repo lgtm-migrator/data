@@ -52,6 +52,7 @@ if [[ "${TRAVIS_BRANCH}" == "master" ]] && [[ "${TRAVIS_PULL_REQUEST}" == "false
 fi
 
 if [[ ${TRAVIS_BRANCH} == update-* ]] && [[ "${TRAVIS_PULL_REQUEST}" == "false" ]]; then
+  git checkout "${TRAVIS_BRANCH}"
   CANDIDATE=$(echo ${TRAVIS_BRANCH} | cut -c 8-)
   if [[ ! -z $CANDIDATE ]]; then
     echo Installing package outside tox environment
@@ -61,20 +62,22 @@ if [[ ${TRAVIS_BRANCH} == update-* ]] && [[ "${TRAVIS_PULL_REQUEST}" == "false" 
     for DATASET in $(dials.data list --quiet --missing-hashinfo)
     do
       if [[ "${DATASET}" == "${CANDIDATE}" ]]; then
-        dials.data list --quiet --missing-hashinfo | grep -- "^${DATASET}$" || { # remove on successful test run
-          echo Sanity check failed
-          exit 1
-        }
         echo Updating dataset ${DATASET}
         dials.data get --create-hashinfo ${DATASET} || exit 1
-        mv ${DATASET}.yml hashinfo/${DATASET}.yml || exit 1
+        mv ${DATASET}.yml dials_data/hashinfo/${DATASET}.yml || exit 1
         if [ -z "$(git status --porcelain)" ]; then
           echo Working directory remained clean. Something went wrong.
           exit 1
         fi
-        git add hashinfo/${DATASET}.yml || exit 1
+        git add dials_data/hashinfo/${DATASET}.yml || exit 1
         echo Committing update
         git commit -m "Update file information for dataset ${DATASET}" || exit 1
+        # Ensure dataset will not be downloaded again in the next round
+        dials.data list --quiet --missing-hashinfo | tee remaining-datasets || exit 1
+        grep -- "^${DATASET}$" < remaining-datasets && {
+          echo Hashinfo sanity check failed
+          exit 1
+        }
         git push || exit 1
         echo Success.
         break
