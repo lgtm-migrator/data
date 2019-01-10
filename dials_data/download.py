@@ -67,7 +67,7 @@ def _download_to_file(url, pyfile):
     Downloads a single URL to a file.
     """
     with contextlib.closing(urlopen(url)) as socket:
-        file_size = int(socket.info().getheader("Content-Length"))
+        file_size = int(socket.info().get("Content-Length"))
         # There is no guarantee that the content-length header is set
         received = 0
         block_size = 8192
