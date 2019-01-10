@@ -46,7 +46,7 @@ if [[ "${TRAVIS_BRANCH}" == "master" ]] && [[ "${TRAVIS_PULL_REQUEST}" == "false
       git commit --allow-empty -m "Trigger update of dataset ${DATASET}"
       git push -f -u origin "update-${DATASET}"
       echo create pull request
-#     hub pull-request -f -m "Update dataset ${DATASET}"
+      hub pull-request -f -m "Update dataset ${DATASET}"
     }
   done
 fi
