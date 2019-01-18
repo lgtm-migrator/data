@@ -55,7 +55,7 @@ author = u"Markus Gerstel"
 # the built documents.
 #
 # The short X.Y version.
-version = "0.5.2"
+version = "0.4.0"
 # The full version, including alpha/beta/rc tags.
 release = version
 
@@ -124,7 +124,13 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass
 # [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, "dials_data.tex", u"DIALS data Documentation", u"Markus Gerstel", "manual")
+    (
+        master_doc,
+        "dials_data.tex",
+        u"DIALS data Documentation",
+        u"Markus Gerstel",
+        "manual",
+    )
 ]
 
 

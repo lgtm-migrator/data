@@ -179,7 +179,7 @@ def fetch_dataset(
 
 
 class DataFetcher:
-    """A class that offers access to regression data sets.
+    """A class that offers access to regression datasets.
 
        To initialize:
            df = DataFetcher()

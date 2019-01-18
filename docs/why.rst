@@ -1,8 +1,8 @@
-==================
-What is dials_data
-==================
+======================
+What is ``dials_data``
+======================
 
-dials_data is a lightweight, simple python(-only) package.
+``dials_data`` is a lightweight, simple python(-only) package.
 It is used to provide access to data files used in regression tests,
 but does not contain any of those data files itself.
 
@@ -11,7 +11,7 @@ environment for tests in DIALS_, dxtbx_, xia2_ and related packages,
 it has no dependencies on either cctbx_ or DIALS_, in fact
 all dependencies are explicitly declared in the setup.py_ file and are
 installable via standard setuptools/pip methods.
-This means dials_data can easily be used in other projects accessing
+This means ``dials_data`` can easily be used in other projects accessing
 the same data, and can be used in temporary environments such as
 Travis containers.
 
@@ -42,19 +42,20 @@ would just raise the complexity even further and would incur associated
 costs. A solution outside SVN/git was built with xia2_regression_,
 which provided a command to download a copy of datasets from a regular
 webhost. This worked well for a while but still made it complicated to
-use the data files in tests, as they had to be downloaded - in full -
+use the data files in tests, as they had to be downloaded -- in full --
 first.
 
 With dxtbx_, dials_ and xia2_ moving to pytest_ we extended the
 xia2_regression_ concept into the regression_data_ fixture to provide
-a simple way to download datasets as needed, but this still meant the
-data could not be used outside of a dials_ distribution and adding
-data files was a very involved process.
+a simple way to access the datasets in tests, but the data still
+needed downloading separately and coult not easily be used outside
+of the dials_ repository and not at all outside of a dials_
+distribution. Adding data files was still a very involved process.
 
-dials_data is the next iteration of our solution to this problem.
+``dials_data`` is the next iteration of our solution to this problem.
 
-What can dials_data do
-======================
+What can ``dials_data`` do
+==========================
 
 The entire pipeline, from adding new data files, to the automatic
 download, storage, preparation, verification and provisioning of the
@@ -65,13 +66,14 @@ repository. The integrity of data files can be guaranteed. Files are
 downloaded/updated as and when required. The provenance of the files
 is documented, so it can be easily identified who the author of the
 files is and under what license they have been made available.
-New data sets can be created, existing ones can be updated easily by
+New datasets can be created, existing ones can be updated easily by
 anyone using Github pull requests.
 
 .. _cctbx: https://cctbx.github.io
 .. _DIALS: https://dials.github.io
 .. _dxtbx: https://github.com/cctbx/cctbx_project/tree/master/dxtbx
 .. _pytest: https://docs.pytest.org/
+.. _regression_data: https://github.com/dials/dials/blob/e54b36b38b3f37c043a5f8f6e54c84db612a387b/conftest.py#L42-L57
 .. _setup.py: https://github.com/dials/data/blob/master/setup.py
 .. _xia2: https://xia2.github.io
 .. _xia2_regression: https://github.com/xia2/xia2_regression
