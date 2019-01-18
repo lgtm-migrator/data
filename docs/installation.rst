@@ -143,3 +143,19 @@ version of ``dials_data`` you can uninstall it with::
 
 and then reinstall it following the
 `instructions at the top of this page <basic-installation_>`__.
+
+
+Where are the regression datasets stored?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In order of evaluation:
+
+* If the environment variable ``DIALS_DATA`` is set and exists or can be
+  created then use that location.
+* If the file path ``/dls/science/groups/scisoft/DIALS/dials_data`` exists and is readable then
+  use this location. This is a shared directory specific to Diamond Light Source.
+* If the environment variable ``LIBTBX_BUILD`` is set and the directory
+  ``dials_data`` exists or can be created underneath that location then
+  use that.
+* Use ``~/.cache/dials_data`` if it exists or can be created.
+* Otherwise ``dials_data`` will fail with a RuntimeError.
