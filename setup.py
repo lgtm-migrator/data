@@ -7,6 +7,9 @@ from setuptools import setup, find_packages
 with open("README.rst") as readme_file:
     readme = readme_file.read()
 
+with open("HISTORY.rst") as history_file:
+    history = history_file.read()
+
 requirements = ["pytest", "pyyaml", "six"]
 setup_requirements = []
 test_requirements = []
@@ -38,7 +41,7 @@ setup(
     },
     install_requires=requirements,
     license="BSD license",
-    long_description=readme,
+    long_description=readme + "\n\n" + history,
     include_package_data=True,
     keywords="dials_data",
     name="dials_data",

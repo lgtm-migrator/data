@@ -14,6 +14,10 @@ DIALS Regression Data Manager
         :target: https://travis-ci.com/dials/data
         :alt: Build status
 
+.. image:: https://readthedocs.org/projects/dials-data/badge/?version=latest
+        :target: https://dials-data.readthedocs.io/en/latest/?badge=latest
+        :alt: Documentation status
+
 .. image:: https://img.shields.io/pypi/pyversions/dials_data.svg
         :target: https://pypi.org/project/dials_data/
         :alt: Supported Python versions
