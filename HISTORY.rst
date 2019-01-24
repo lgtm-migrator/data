@@ -2,10 +2,11 @@
 History
 =======
 
-0.5 (unreleased)
+0.5 (2019-01-24)
 ^^^^^^^^^^^^^^^^
 
 * Added documentation
+* Added datasets fumarase, vmxi_thaumatin
 
 0.4 (2018-01-11)
 ^^^^^^^^^^^^^^^^
