@@ -106,3 +106,7 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# notification logs
+.git-notifier*
+git-notifier.log
