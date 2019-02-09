@@ -119,9 +119,9 @@ def _human_readable(num, suffix="B"):
         if num < 10:
             return "%.1f%s%s" % (num, unit, suffix)
         if num < 1024:
-            return "%3.0f%s%s" % (num, unit, suffix)
+            return "%.0f%s%s" % (num, unit, suffix)
         num /= 1024.0
-    return "%3.0f%s%s" % (num, "T", suffix)
+    return "%.0f%s%s" % (num, "T", suffix)
 
 
 def list_known_definitions(ds_list, quiet=False):
