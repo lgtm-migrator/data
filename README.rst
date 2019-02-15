@@ -44,7 +44,7 @@ For everything else `the main documentation <https://dials-data.readthedocs.io/>
 
 
 Installation
-------------
+^^^^^^^^^^^^
 
 To install this package in a normal Python environment, run::
 

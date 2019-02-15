@@ -2,6 +2,11 @@
 History
 =======
 
+0.6 (2019-02-15)
+^^^^^^^^^^^^^^^^
+
+* Added datasets blend_tutorial, thaumatin_i04
+
 0.5 (2019-01-24)
 ^^^^^^^^^^^^^^^^
 

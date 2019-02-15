@@ -42,6 +42,7 @@ setup(
     install_requires=requirements,
     license="BSD license",
     long_description=readme + "\n\n" + history,
+    long_description_content_type="text/x-rst",
     include_package_data=True,
     keywords="dials_data",
     name="dials_data",
@@ -50,6 +51,6 @@ setup(
     test_suite="tests",
     tests_require=test_requirements,
     url="https://github.com/dials/data",
-    version="0.5.0",
+    version="0.6.0",
     zip_safe=False,
 )

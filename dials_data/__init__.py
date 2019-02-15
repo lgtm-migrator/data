@@ -10,7 +10,7 @@ from .download import DataFetcher
 __all__ = ["pytest_addoption", "dials_data"]
 __author__ = """Markus Gerstel"""
 __email__ = "dials-support@lists.sourceforge.net"
-__version__ = "0.5.0"
+__version__ = "0.6.0"
 
 
 def pytest_addoption(parser):
