@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
-"""Top-level package for DIALS Regression Data."""
+"""
+DIALS Regression Data Manager
+https://github.com/dials/data
+"""
 
 from __future__ import absolute_import, division, print_function
 

@@ -101,19 +101,31 @@ def fetch_dataset(
     verbose=False,
     pre_scan=True,
 ):
-    """Return a the location of a local copy of the test dataset repository.
-       If this repository is not available or out of date then attempt to download/update it transparently.
+    """Check for the presence or integrity of the local copy of the specified
+       test dataset. If the dataset is not available or out of date then attempt
+       to download/update it transparently.
 
        :param verbose:          Show everything as it happens.
        :param pre_scan:         If all files are present and all file sizes match
                                 then skip file integrity check and exit quicker.
        :param read_only:        Only use existing data, never download anything.
                                 Implies pre_scan=True.
+       :returns:                False if the dataset can not be downloaded/updated
+                                for any reason.
+                                True if the dataset is present and passes a
+                                cursory inspection.
+                                A validation dictionary if the dataset is present
+                                and was fully verified.
     """
+    if dataset not in dials_data.datasets.definition:
+        return False
+    definition = dials_data.datasets.definition[dataset]
+
     target_dir = dials_data.datasets.repository_location().join(dataset)
+    if read_only and not target_dir.check(dir=1):
+        return False
     target_dir.ensure(dir=1)
 
-    definition = dials_data.datasets.definition[dataset]
     integrity_info = definition.get("hashinfo")
     if not integrity_info or ignore_hashinfo:
         integrity_info = dials_data.datasets.create_integrity_record(dataset)
