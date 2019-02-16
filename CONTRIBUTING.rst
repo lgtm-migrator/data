@@ -23,17 +23,11 @@ If you are reporting a bug, please include:
 * Any details about your local setup that might be helpful in troubleshooting.
 * Detailed steps to reproduce the bug.
 
-Fix Bugs
-~~~~~~~~
+Add Datasets
+~~~~~~~~~~~~
 
-Look through the GitHub issues for bugs. Anything tagged with "bug" and "help
-wanted" is open to whoever wants to implement it.
-
-Implement Features
-~~~~~~~~~~~~~~~~~~
-
-Look through the GitHub issues for features. Anything tagged with "enhancement"
-and "help wanted" is open to whoever wants to implement it.
+DIALS data was planned to support a more or less arbitrary number of datasets.
+You can contribute by adding more.
 
 Write Documentation
 ~~~~~~~~~~~~~~~~~~~
@@ -98,31 +92,27 @@ Pull Request Guidelines
 
 Before you submit a pull request, check that it meets these guidelines:
 
-1. The pull request should include tests.
-2. If the pull request adds functionality, the docs should be updated. Put
+1. The pull request should include tests, unless you are adding or updating
+   a dataset.
+2. If you add or update a dataset then make individual pull requests for each
+   dataset, so that they can be discussed and approved separately.
+3. If the pull request adds functionality, the docs should be updated. Put
    your new functionality into a function with a docstring, and add the
-   feature to the list in README.rst.
-3. The pull request should work for Python 2.7, 3.4, 3.5 and 3.6, and for PyPy. Check
-   https://travis-ci.org/dials/data/pull_requests
-   and make sure that the tests pass for all supported Python versions.
-
-Tips
-----
-
-To run a subset of tests::
-
-$ py.test tests.test_dials_data
+   feature to the list in HISTORY.rst.
+4. The pull request should work for all supported Python versions. Check
+   https://travis-ci.com/dials/data/pull_requests
 
 
 Deploying
 ---------
 
-A reminder for the maintainers on how to deploy.
-Make sure all your changes are committed (including an entry in HISTORY.rst).
-Then run::
+Any commit on the master branch is now automatically deployed to PyPI, so there
+is no need to play around with tags or version numbers on a regular basis.
 
-$ bumpversion patch # possible: major / minor / patch
-$ git push
-$ git push --tags
+For slightly larger changes make sure that the entry in HISTORY.rst is updated,
+and then run::
 
-Travis will then deploy to PyPI if tests pass.
+$ bumpversion minor # possible: major / minor, do not use patch
+
+Travis will then automatically tag the commit once it hits the master branch
+and the tests pass, and then deploy to PyPI as usual.

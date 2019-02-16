@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
-"""Top-level package for DIALS Regression Data."""
+"""
+DIALS Regression Data Manager
+https://github.com/dials/data
+"""
 
 from __future__ import absolute_import, division, print_function
 
@@ -10,7 +13,9 @@ from .download import DataFetcher
 __all__ = ["pytest_addoption", "dials_data"]
 __author__ = """Markus Gerstel"""
 __email__ = "dials-support@lists.sourceforge.net"
-__version__ = "0.6.0"
+__version__ = "1.0.0"
+__commit__ = ""
+__version_tuple__ = tuple(int(x) for x in __version__.split("."))
 
 
 def pytest_addoption(parser):
@@ -36,7 +41,11 @@ def dials_data(request):
         pytest.skip("Test requires --regression option to run.")
     df = DataFetcher()
 
-    def skip_test_if_lookup_failed(result):
+    def skip_test_if_lookup_failed(result, dials_data_too_old=False):
+        if dials_data_too_old:
+            pytest.skip(
+                "Test requires a newer version of dials_data (v%s)" % dials_data_too_old
+            )
         if not result:
             pytest.skip(
                 "Automated download of test data failed. Download manually using dials.data"

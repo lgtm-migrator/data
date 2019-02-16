@@ -69,6 +69,10 @@ def cli_list(cmd_args):
 
 
 def main():
+    if dials_data.__commit__:
+        version = dials_data.__version__ + "-g" + dials_data.__commit__[:7]
+    else:
+        version = dials_data.__version__ + "-dev"
     parser = argparse.ArgumentParser(
         usage="dials.data <command> [<args>]",
         description="""DIALS regression data manager v{version}
@@ -77,7 +81,7 @@ The most commonly used commands are:
    list     List available datasets
    get      Download datasets
 """.format(
-            version=dials_data.__version__
+            version=version
         ),
         formatter_class=argparse.RawTextHelpFormatter,
     )

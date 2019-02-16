@@ -2,6 +2,12 @@
 History
 =======
 
+1.0 (2019-02-16)
+^^^^^^^^^^^^^^^^
+
+* Add functions for forward-compatibility
+* Enable new release process including automatic deployment of updates
+
 0.6 (2019-02-15)
 ^^^^^^^^^^^^^^^^
 

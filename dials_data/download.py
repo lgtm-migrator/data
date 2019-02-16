@@ -101,19 +101,31 @@ def fetch_dataset(
     verbose=False,
     pre_scan=True,
 ):
-    """Return a the location of a local copy of the test dataset repository.
-       If this repository is not available or out of date then attempt to download/update it transparently.
+    """Check for the presence or integrity of the local copy of the specified
+       test dataset. If the dataset is not available or out of date then attempt
+       to download/update it transparently.
 
        :param verbose:          Show everything as it happens.
        :param pre_scan:         If all files are present and all file sizes match
                                 then skip file integrity check and exit quicker.
        :param read_only:        Only use existing data, never download anything.
                                 Implies pre_scan=True.
+       :returns:                False if the dataset can not be downloaded/updated
+                                for any reason.
+                                True if the dataset is present and passes a
+                                cursory inspection.
+                                A validation dictionary if the dataset is present
+                                and was fully verified.
     """
+    if dataset not in dials_data.datasets.definition:
+        return False
+    definition = dials_data.datasets.definition[dataset]
+
     target_dir = dials_data.datasets.repository_location().join(dataset)
+    if read_only and not target_dir.check(dir=1):
+        return False
     target_dir.ensure(dir=1)
 
-    definition = dials_data.datasets.definition[dataset]
     integrity_info = definition.get("hashinfo")
     if not integrity_info or ignore_hashinfo:
         integrity_info = dials_data.datasets.create_integrity_record(dataset)
@@ -207,25 +219,51 @@ class DataFetcher:
             self._target_dir.strpath,
         )
 
-    def result_filter(self, result):
+    def result_filter(self, result, **kwargs):
         """
         An overridable function to mangle lookup results.
         Used in tests to transform negative lookups to test skips.
+        Overriding functions should add **kwargs to function signature
+        to be forwards compatible.
         """
         return result
 
-    def __call__(self, test_data):
+    def __call__(self, test_data, **kwargs):
+        """
+        Return the location of a dataset, transparently downloading it if
+        necessary and possible.
+        The return value can be manipulated by overriding the result_filter
+        function.
+        :param test_data: name of the requested dataset.
+        :param min_version: minimum required version of dials_data.
+        :return: A py.path.local object pointing to the dataset, or False
+                 if the dataset is not available.
+        """
         if test_data not in self._cache:
-            if self._read_only:
-                data_available = fetch_dataset(test_data, pre_scan=True, read_only=True)
+            self._cache[test_data] = self._attempt_fetch(test_data, **kwargs)
+        return self.result_filter(**self._cache[test_data])
+
+    def _attempt_fetch(self, test_data, min_version=None):
+        if min_version:
+            if isinstance(min_version, tuple):
+                min_version_tuple = min_version
             else:
-                with download_lock(self._target_dir):
-                    # Need to acquire lock as files may be downloaded/written.
-                    data_available = fetch_dataset(
-                        test_data, pre_scan=True, read_only=False
-                    )
-            if data_available:
-                self._cache[test_data] = self._target_dir.join(test_data)
-            else:
-                self._cache[test_data] = False
-        return self.result_filter(self._cache[test_data])
+                min_version_tuple = tuple(int(x) for x in min_version.split("."))
+            if dials_data.__version_tuple__ < min_version_tuple:
+                return {
+                    "result": False,
+                    "dials_data_too_old": ".".join(map(str, min_version_tuple)),
+                }
+
+        if self._read_only:
+            data_available = fetch_dataset(test_data, pre_scan=True, read_only=True)
+        else:
+            with download_lock(self._target_dir):
+                # Need to acquire lock as files may be downloaded/written.
+                data_available = fetch_dataset(
+                    test_data, pre_scan=True, read_only=False
+                )
+        if data_available:
+            return {"result": self._target_dir.join(test_data)}
+        else:
+            return {"result": False}

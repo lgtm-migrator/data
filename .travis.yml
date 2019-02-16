@@ -1,5 +1,8 @@
 language: python
 
+branches:
+  except: /^v[0-9]/ # Don't build on release tags
+
 install: pip install -U tox-travis
 script: tox
 

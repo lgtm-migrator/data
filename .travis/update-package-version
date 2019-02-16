@@ -1,9 +1,35 @@
 #!/bin/bash
 
-VERSION=$(grep version dials_data/__init__.py | cut -d'"' -f 2)
+set -e
+
+RESTRICT_REPOSITORY="dials/data"
+if [[ "${TRAVIS_REPO_SLUG}" != "${RESTRICT_REPOSITORY}" ]]; then
+  echo Skipping step outside of ${RESTRICT_REPOSITORY} repository
+  exit 0
+fi
+
+VERSION=$(grep "^__version__" dials_data/__init__.py | cut -d'"' -f 2)
 BASETAG=v${VERSION}
-DEPTH=$(git rev-list ${BASETAG}..HEAD --count)
+git tag --list | grep "^${BASETAG}$" || {
+  echo Searching for tag on remote
+  if git fetch origin tag ${BASETAG}; then
+    echo Tag found on remote. Deepening checkout...
+    git fetch --shallow-exclude ${BASETAG}
+    git fetch --deepen 1
+  else
+    echo "Tag not found on remote. Let's make a new one!"
+    git tag ${BASETAG}
+    # assume git credentials were previously set in update-hashinfo
+    git push origin ${BASETAG}
+  fi
+}
+
+DEPTH=$(git rev-list ${BASETAG}..HEAD --count --first-parent)
 REAL_VERSION=${VERSION%.0}.${DEPTH}
-sed -i "s/^__version__.*/__version__ = \"${REAL_VERSION}\"/" dials_data/__init__.py
+echo Setting package version from ${VERSION} to ${REAL_VERSION}
+sed -i "s/^__version__ =.*/__version__ = \"${REAL_VERSION}\"/" dials_data/__init__.py
 sed -i "s/^\(\s\+\)version=\".*\",$/\1version=\"${REAL_VERSION}\",/" setup.py
-echo Set package version from ${VERSION} to ${REAL_VERSION}
+
+COMMIT=$(git rev-parse --verify HEAD)
+echo Setting package commit to ${COMMIT}
+sed -i "s/^__commit__ =.*/__commit__ = \"${COMMIT}\"/" dials_data/__init__.py
