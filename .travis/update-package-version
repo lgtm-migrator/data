@@ -24,8 +24,12 @@ git tag --list | grep "^${BASETAG}$" || {
   fi
 }
 
-DEPTH=$(git rev-list ${BASETAG}..HEAD --count)
+DEPTH=$(git rev-list ${BASETAG}..HEAD --count --first-parent)
 REAL_VERSION=${VERSION%.0}.${DEPTH}
 echo Setting package version from ${VERSION} to ${REAL_VERSION}
-sed -i "s/^__version__.*/__version__ = \"${REAL_VERSION}\"/" dials_data/__init__.py
+sed -i "s/^__version__ =.*/__version__ = \"${REAL_VERSION}\"/" dials_data/__init__.py
 sed -i "s/^\(\s\+\)version=\".*\",$/\1version=\"${REAL_VERSION}\",/" setup.py
+
+COMMIT=$(git rev-parse --verify HEAD)
+echo Setting package commit to ${COMMIT}
+sed -i "s/^__commit__ =.*/__commit__ = \"${COMMIT}\"/" dials_data/__init__.py
