@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION=$(grep version dials_data/__init__.py | cut -d'"' -f 2)
+VERSION=$(grep "^__version__" dials_data/__init__.py | cut -d'"' -f 2)
 BASETAG=v${VERSION}
 DEPTH=$(git rev-list ${BASETAG}..HEAD --count)
 REAL_VERSION=${VERSION%.0}.${DEPTH}

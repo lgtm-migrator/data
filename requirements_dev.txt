@@ -1,4 +1,5 @@
 bumpversion==0.5.3
+mock
 pip==19.0.1
 py
 pytest==4.2.0
