@@ -100,6 +100,7 @@ def fetch_dataset(
     read_only=False,
     verbose=False,
     pre_scan=True,
+    download_lockdir=None,
 ):
     """Check for the presence or integrity of the local copy of the specified
        test dataset. If the dataset is not available or out of date then attempt
@@ -124,7 +125,6 @@ def fetch_dataset(
     target_dir = dials_data.datasets.repository_location().join(dataset)
     if read_only and not target_dir.check(dir=1):
         return False
-    target_dir.ensure(dir=1)
 
     integrity_info = definition.get("hashinfo")
     if not integrity_info or ignore_hashinfo:
@@ -152,6 +152,17 @@ def fetch_dataset(
         if read_only:
             return False
 
+    if download_lockdir:
+        # Acquire lock if required as files may be downloaded/written.
+        with download_lock(download_lockdir):
+            _fetch_filelist(filelist, file_hash)
+    else:
+        _fetch_filelist(filelist, file_hash)
+
+    return integrity_info
+
+
+def _fetch_filelist(filelist, file_hash):
     for source in filelist:  # parallelize this
         if source.get("type", "file") == "file":
             valid = False
@@ -186,8 +197,6 @@ def fetch_dataset(
             else:
                 source["verify"]["size"] = fileinfo["size"]
                 source["verify"]["hash"] = fileinfo["hash"]
-
-    return integrity_info
 
 
 class DataFetcher:
@@ -258,11 +267,12 @@ class DataFetcher:
         if self._read_only:
             data_available = fetch_dataset(test_data, pre_scan=True, read_only=True)
         else:
-            with download_lock(self._target_dir):
-                # Need to acquire lock as files may be downloaded/written.
-                data_available = fetch_dataset(
-                    test_data, pre_scan=True, read_only=False
-                )
+            data_available = fetch_dataset(
+                test_data,
+                pre_scan=True,
+                read_only=False,
+                download_lockdir=self._target_dir,
+            )
         if data_available:
             return {"result": self._target_dir.join(test_data)}
         else:
