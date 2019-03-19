@@ -67,7 +67,9 @@ def _download_to_file(url, pyfile):
     Downloads a single URL to a file.
     """
     with contextlib.closing(urlopen(url)) as socket:
-        file_size = int(socket.info().get("Content-Length"))
+        file_size = socket.info().get("Content-Length")
+        if file_size:
+            file_size = int(file_size)
         # There is no guarantee that the content-length header is set
         received = 0
         block_size = 8192
@@ -80,7 +82,7 @@ def _download_to_file(url, pyfile):
                 if not block:
                     break
 
-    if file_size > 0 and file_size != received:
+    if file_size and file_size != received:
         raise EnvironmentError(
             "Error downloading {url}: received {received} bytes instead of expected {file_size} bytes".format(
                 file_size=file_size, received=received, url=url
