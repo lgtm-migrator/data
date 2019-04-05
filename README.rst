@@ -14,6 +14,14 @@ DIALS Regression Data Manager
         :target: https://travis-ci.com/dials/data
         :alt: Build status
 
+.. image:: https://img.shields.io/lgtm/grade/python/g/dials/data.svg?logo=lgtm&logoWidth=18
+        :target: https://lgtm.com/projects/g/dials/data/context:python
+        :alt: Language grade: Python
+
+.. image:: https://img.shields.io/lgtm/alerts/g/dials/data.svg?logo=lgtm&logoWidth=18
+        :target: https://lgtm.com/projects/g/dials/data/alerts/
+        :alt: Total alerts
+
 .. image:: https://readthedocs.org/projects/dials-data/badge/?version=latest
         :target: https://dials-data.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation status

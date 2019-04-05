@@ -33,7 +33,6 @@ def _file_lock(file_handle):
     lock = False
     try:
         if fcntl:
-            flags = fcntl.LOCK_EX
             fcntl.lockf(file_handle, fcntl.LOCK_EX)
         else:
             file_handle.seek(0)
@@ -133,7 +132,7 @@ def fetch_dataset(
         integrity_info = dials_data.datasets.create_integrity_record(dataset)
 
     if "verify" not in integrity_info:
-        integrity_info["verify"] = [{} for source in definition["data"]]
+        integrity_info["verify"] = [{} for _ in definition["data"]]
     filelist = [
         {
             "url": source["url"],
