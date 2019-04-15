@@ -38,6 +38,7 @@ setup(
     entry_points={
         "console_scripts": ["dials.data = dials_data.cli:main"],
         "libtbx.dispatcher.script": ["dials.data = dials.data"],
+        "pytest11": ["dials_data = dials_data.pytest11"],
     },
     install_requires=requirements,
     license="BSD license",
