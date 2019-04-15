@@ -91,7 +91,7 @@ file named ``conftest.py`` in the top level of your project:
 
     import pytest
     try:
-        from dials_data import *
+        import dials_data as _
     except ImportError:
         @pytest.fixture
         def dials_data():
