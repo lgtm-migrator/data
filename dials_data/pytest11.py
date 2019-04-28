@@ -30,14 +30,10 @@ def dials_data(request):
         pytest.skip("Test requires --regression option to run.")
     df = DataFetcher()
 
-    def skip_test_if_lookup_failed(result, dials_data_too_old=False):
-        if dials_data_too_old:
-            pytest.skip(
-                "Test requires a newer version of dials_data (v%s)" % dials_data_too_old
-            )
+    def fail_test_if_lookup_failed(result):
         if not result:
-            pytest.skip(
-                "Automated download of test data failed. Download manually using dials.data"
+            pytest.fail(
+                "Test data could not be downloaded. Your version of dials.data may be out of date"
             )
         return result
 

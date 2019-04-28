@@ -245,7 +245,6 @@ class DataFetcher:
         The return value can be manipulated by overriding the result_filter
         function.
         :param test_data: name of the requested dataset.
-        :param min_version: minimum required version of dials_data.
         :return: A py.path.local object pointing to the dataset, or False
                  if the dataset is not available.
         """
@@ -255,16 +254,11 @@ class DataFetcher:
 
     def _attempt_fetch(self, test_data, min_version=None):
         if min_version:
-            if isinstance(min_version, tuple):
-                min_version_tuple = min_version
-            else:
-                min_version_tuple = tuple(int(x) for x in min_version.split("."))
-            if dials_data.__version_tuple__ < min_version_tuple:
-                return {
-                    "result": False,
-                    "dials_data_too_old": ".".join(map(str, min_version_tuple)),
-                }
+            import warnings
 
+            warnings.warn(
+                "min_version argument is deprecated", DeprecationWarning, stacklevel=2
+            )
         if self._read_only:
             data_available = fetch_dataset(test_data, pre_scan=True, read_only=True)
         else:

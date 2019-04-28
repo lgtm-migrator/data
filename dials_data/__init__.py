@@ -27,6 +27,7 @@ def pytest_addoption(parser):
         stacklevel=2,
     )
 
+
 @pytest.fixture
 def dials_data():
     warnings.warn(
