@@ -8,14 +8,10 @@ from six.moves.urllib.request import urlopen
 from six.moves.urllib.parse import urlparse
 
 fcntl, msvcrt = None, None
-try:
+if os.name == "posix":
     import fcntl
-except ImportError:
-    pass
-try:
+elif os.name == "nt":
     import msvcrt
-except ImportError:
-    pass
 
 
 @contextlib.contextmanager
