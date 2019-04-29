@@ -37,5 +37,5 @@ def dials_data(request):
             )
         return result
 
-    setattr(df, "result_filter", skip_test_if_lookup_failed)
+    setattr(df, "result_filter", fail_test_if_lookup_failed)
     return df
