@@ -20,6 +20,9 @@ def cli_get(cmd_args):
         help="generate file integrity information for specified datasets in the current directory",
     )
     parser.add_argument(
+        "-q", "--quiet", action="store_true", help="machine readable output"
+    )
+    parser.add_argument(
         "--verify", action="store_true", help="verify integrity of downloaded dataset"
     )
     args = parser.parse_args(cmd_args)
@@ -34,18 +37,24 @@ def cli_get(cmd_args):
         sys.exit("Unknown dataset: {}".format(", ".join(unknown_data)))
 
     repository = dials_data.datasets.repository_location()
-    print("Repository location: {repo.strpath}\n".format(repo=repository))
+    if not args.quiet:
+        print("Repository location: {repo.strpath}\n".format(repo=repository))
 
     for ds in args.dataset:
-        print("Downloading dataset {}".format(ds))
+        if not args.quiet:
+            print("Downloading dataset {}".format(ds))
         hashinfo = dials_data.download.fetch_dataset(
             ds, ignore_hashinfo=args.create_hashinfo, verify=args.verify
         )
         if args.create_hashinfo:
-            print("Writing file integrity information to {}.yml".format(ds))
+            if not args.quiet:
+                print("Writing file integrity information to {}.yml".format(ds))
             with open("{}.yml".format(ds), "w") as fh:
                 yaml.dump(hashinfo, fh, default_flow_style=False)
-    print("Done")
+        if args.quiet:
+            print(repository.join(ds).strpath)
+        else:
+            print("Dataset {} stored in {}".format(ds, repository.join(ds).strpath))
 
 
 def cli_list(cmd_args):
