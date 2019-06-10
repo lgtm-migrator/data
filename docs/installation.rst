@@ -82,18 +82,17 @@ You can see a list of all available datasets by running::
 or by going through the
 `dataset definition files in the repository <https://github.com/dials/data/tree/master/dials_data/definitions>`__.
 
-For a new project you may have to set up the ``dials_data`` fixture
-first.
-Assuming you are using ``pytest`` then simply add the following to a
-file named ``conftest.py`` in the top level of your project:
+If you want the tests on your project to be runnable even when
+``dials_data`` is not installed in the environment you could add a
+dummy fixture to your ``conftest.py``, for example:
 
 .. code-block:: python
 
     import pytest
     try:
-        import dials_data as _
+        import dials_data as _  # noqa: F401
     except ImportError:
-        @pytest.fixture
+        @pytest.fixture(scope="session")
         def dials_data():
             pytest.skip("Test requires python package dials_data")
 
