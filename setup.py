@@ -38,6 +38,7 @@ setup(
     entry_points={
         "console_scripts": ["dials.data = dials_data.cli:main"],
         "libtbx.dispatcher.script": ["dials.data = dials.data"],
+        "pytest11": ["dials_data = dials_data.pytest11"],
     },
     install_requires=requirements,
     license="BSD license",
@@ -51,6 +52,6 @@ setup(
     test_suite="tests",
     tests_require=test_requirements,
     url="https://github.com/dials/data",
-    version="1.0.0",
+    version="2.0.0",
     zip_safe=False,
 )

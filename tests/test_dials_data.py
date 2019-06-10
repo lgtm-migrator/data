@@ -26,7 +26,5 @@ def test_requests_for_future_datasets_can_be_intercepted():
     df = dials_data.download.DataFetcher(read_only=True)
     df.result_filter = mock.Mock()
     df.result_filter.return_value = False
-    assert df("aardvark", min_version="99.99.99") is False
-    df.result_filter.assert_called_once_with(
-        result=False, dials_data_too_old="99.99.99"
-    )
+    assert df("aardvark") is False
+    df.result_filter.assert_called_once_with(result=False)

@@ -2,6 +2,11 @@
 History
 =======
 
+2.0 (2019-04-15)
+^^^^^^^^^^^^^^^^
+
+* Convert dials_data to a pytest plugin
+
 1.0 (2019-02-16)
 ^^^^^^^^^^^^^^^^
 
@@ -19,7 +24,7 @@ History
 * Added documentation
 * Added datasets fumarase, vmxi_thaumatin
 
-0.4 (2018-01-11)
+0.4 (2019-01-11)
 ^^^^^^^^^^^^^^^^
 
 * Beta release
