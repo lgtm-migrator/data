@@ -28,7 +28,6 @@ jobs:
       dist: xenial
     - python: 3.6
     - python: 3.5
-    - python: 3.4
     - python: 2.7
 
     - stage: deploy
