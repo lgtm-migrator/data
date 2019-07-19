@@ -30,13 +30,9 @@ DIALS Regression Data Manager
         :target: https://pypi.org/project/dials_data/
         :alt: Supported Python versions
 
-.. image:: https://pyup.io/repos/github/dials/data/python-3-shield.svg
-        :target: https://pyup.io/repos/github/dials/data/
-        :alt: Python 3 ready
-
-.. image:: https://pyup.io/repos/github/dials/data/shield.svg
-        :target: https://pyup.io/repos/github/dials/data/
-        :alt: Updates
+.. image:: https://flat.badgen.net/dependabot/dials/data?icon=dependabot
+        :target: https://github.com/dials/data/pulls
+        :alt: Dependabot dependency updates
 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
         :target: https://github.com/ambv/black
