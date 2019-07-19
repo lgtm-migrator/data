@@ -33,8 +33,8 @@ def test_yaml_file_is_valid_definition(yaml_file):
         pkg_resources.resource_stream("dials_data", "definitions/" + yaml_file).read()
     )
     fields = set(definition)
-    required = set(("name", "data", "description"))
-    optional = set(("license", "url", "author"))
+    required = {"name", "data", "description"}
+    optional = {"license", "url", "author"}
     assert fields >= required, "Required fields missing: " + str(
         sorted(required - fields)
     )
@@ -53,7 +53,7 @@ def test_yaml_file_is_valid_hashinfo(yaml_file):
         pkg_resources.resource_stream("dials_data", "hashinfo/" + yaml_file).read()
     )
     fields = set(hashinfo)
-    required = set(("definition", "formatversion", "verify"))
+    required = {"definition", "formatversion", "verify"}
     assert fields >= required, "Required fields missing: " + str(
         sorted(required - fields)
     )
