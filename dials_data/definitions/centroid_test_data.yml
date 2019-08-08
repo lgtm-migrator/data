@@ -27,6 +27,7 @@ data:
   - url: https://github.com/dials/data-files/raw/8fe7910a15c361a1f69012662b3f001f4db3cbe0/centroid_test_data/imported_experiments.json
   - url: https://github.com/dials/data-files/raw/8fe7910a15c361a1f69012662b3f001f4db3cbe0/centroid_test_data/integrated.mpack
   - url: https://github.com/dials/data-files/raw/8fe7910a15c361a1f69012662b3f001f4db3cbe0/centroid_test_data/integrated.pickle
+  - url: https://github.com/dials/data-files/raw/8fe7910a15c361a1f69012662b3f001f4db3cbe0/centroid_test_data/integrated.refl
   - url: https://github.com/dials/data-files/raw/8fe7910a15c361a1f69012662b3f001f4db3cbe0/centroid_test_data/INTEGRATE.HKL
   - url: https://github.com/dials/data-files/raw/3e06b1b8091f2b21cbda1d8c0c3abcd3cf9df04c/centroid_test_data/lookup_mask.pickle
   - url: https://github.com/dials/data-files/raw/8fe7910a15c361a1f69012662b3f001f4db3cbe0/centroid_test_data/mask.pickle
