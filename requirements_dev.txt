@@ -4,7 +4,7 @@ pip==19.1.1
 py==1.8.0
 pytest==4.5.0
 pytest-runner==5.1
-pyyaml==5.1.1
+pyyaml==5.1.2
 six==1.12.0
 Sphinx==1.8.5
 sphinx_rtd_theme==0.4.3
