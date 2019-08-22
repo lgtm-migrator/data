@@ -206,18 +206,16 @@ class DataFetcher:
        returns a py.path object to the insulin data. If that data is not already
        on disk it is downloaded automatically.
 
-       To specify where data is stored:
-           df = DataFetcher('/location/where/data/can/be/stored')
        To disable all downloads:
            df = DataFetcher(read_only=True)
 
        Do not use this class directly in tests! Use the dials_data fixture.
     """
 
-    def __init__(self, target_dir=None, read_only=False):
+    def __init__(self, read_only=False):
         self._cache = {}
         self._target_dir = dials_data.datasets.repository_location()
-        self._read_only = read_only
+        self._read_only = read_only and os.access(self._target_dir.strpath, os.W_OK)
 
     def __repr__(self):
         return "<%sDataFetcher: %s>" % (
