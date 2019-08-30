@@ -3,6 +3,7 @@ author: Richard Gildea (2019)
 license: Various
 description: >
   A collection of image examples from various beamlines, primarily intended for testing of dxtbx format classes.
+  See also: https://github.com/dials/data-files/blob/master/image_examples/README.md
 
 data:
   - url: https://github.com/dials/data-files/raw/a94f07a5d2b4f3f031bc611abe4c600163591c02/image_examples/DLS_I03_smargon_0001.cbf.gz
