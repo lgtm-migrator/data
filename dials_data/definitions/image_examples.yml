@@ -7,4 +7,4 @@ description: >
 data:
   - url: https://github.com/dials/data-files/raw/a94f07a5d2b4f3f031bc611abe4c600163591c02/image_examples/DLS_I03_smargon_0001.cbf.gz
   - url: https://github.com/dials/data-files/raw/d4728bd637fb6eab8e708f451af2383491117651/dlsnxs2cbf/therm_0001.cbf.gz
-  - url: https://github.com/dials/data-files/raw/a94f07a5d2b4f3f031bc611abe4c600163591c02/image_examples/DLS_I03_smargon_0001.cbf.gz
+  - url: https://github.com/dials/data-files/raw/a94f07a5d2b4f3f031bc611abe4c600163591c02/image_examples/SACLA-MPCCD-Phase3-21528-5images.h5
