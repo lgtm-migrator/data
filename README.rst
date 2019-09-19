@@ -6,9 +6,9 @@ DIALS Regression Data Manager
         :target: https://pypi.python.org/pypi/dials_data
         :alt: PyPI release
 
-.. image:: https://img.shields.io/pypi/l/dials_data.svg
-        :target: https://pypi.python.org/pypi/dials_data
-        :alt: BSD license
+.. image:: https://img.shields.io/conda/vn/conda-forge/dials-data.svg
+        :target: https://anaconda.org/conda-forge/dials-data
+        :alt: Conda release
 
 .. image:: https://travis-ci.com/dials/data.svg?branch=master
         :target: https://travis-ci.com/dials/data
@@ -37,6 +37,10 @@ DIALS Regression Data Manager
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
         :target: https://github.com/ambv/black
         :alt: Code style: black
+
+.. image:: https://img.shields.io/pypi/l/dials_data.svg
+        :target: https://pypi.python.org/pypi/dials_data
+        :alt: BSD license
 
 A python package providing data files used for regression tests in
 DIALS_, dxtbx_, xia2_ and related packages.
