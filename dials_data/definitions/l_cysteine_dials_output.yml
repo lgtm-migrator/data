@@ -1,5 +1,5 @@
 name: DIALS output of processing an L-cysteine dataset
-author: Ben Williams (2018)
+author: Ben Williams, Richard Gildea (2019)
 license: CC-BY 4.0
 description: >
   Typical DIALS output for a small-molecule dataset.
@@ -11,12 +11,19 @@ description: >
   $ curl -O https://zenodo.org/record/51405/files/l-cyst_0[1-4].tar.gz
   $ ls *tar.gz | xargs -i tar xzf {}
 
-  The datablock.json file was then generated using
+  The imported.expt file was then generated using
   $ dials.import allow_multiple_sweeps=True l-cyst_0*cbf
 
-  and the strong.pickle file was generated using
-  $ dials.find_spots datablock.json
+  and the strong.refl file was generated using
+  $ dials.find_spots imported.expt
+
+  The indexed.expt and indexed.refl were generated using
+  $ dials.index imported.expt strong.refl
 
 data:
- - url: https://dials.diamond.ac.uk/regression_data/l-cysteine_four_sweeps/datablock.json
- - url: https://dials.diamond.ac.uk/regression_data/l-cysteine_four_sweeps/strong.pickle
+  - url: https://dials.diamond.ac.uk/regression_data/l-cysteine_four_sweeps/datablock.json
+  - url: https://dials.diamond.ac.uk/regression_data/l-cysteine_four_sweeps/strong.pickle
+  - url: https://github.com/dials/data-files/raw/63421a6a8a0ccb844f4f68ff073172f9e4bd4713/l_cysteine_dials_output/imported.expt
+  - url: https://github.com/dials/data-files/raw/63421a6a8a0ccb844f4f68ff073172f9e4bd4713/l_cysteine_dials_output/indexed.expt
+  - url: https://github.com/dials/data-files/raw/63421a6a8a0ccb844f4f68ff073172f9e4bd4713/l_cysteine_dials_output/strong.refl
+  - url: https://github.com/dials/data-files/raw/63421a6a8a0ccb844f4f68ff073172f9e4bd4713/l_cysteine_dials_output/indexed.refl
