@@ -17,12 +17,10 @@ stages:
       (branch = master OR branch =~ /^update-/)
 
 jobs:
-  allow_failures:
-    - python: 3.8-dev
   fast_finish: true
 
   include:
-    - python: 3.8-dev
+    - python: 3.8
       dist: xenial
     - python: 3.7
       dist: xenial
@@ -31,7 +29,7 @@ jobs:
     - python: 2.7
 
     - stage: deploy
-      python: 3.7
+      python: 3.8
       dist: xenial
       env:
         - secure: q3NrzfQH7Hyf5/cNR/sb1p3LFBWRkN7d/ybuj9ghymJ+Sh3IfQv6bOFtZZ0Pz+LRDChIyuiiKujY6woxmJgMydOI/HGCg849goBxB1reUbHqUjM3df3ST1jPRm+C7uLWDRlRowM5nwNjYXLvqvEL+tcS86mJxqm4EHs5Lxa5hYJss9szHxvtoYW81q1NNbKv+/YZyNbjq6HK7yPLHZ5ZeF4uX3uFEhxPeh2Q6J9nZTDXkYnLpPy4T9CI744FmcG0K07syYS/EsAr0u+jE0ynEkcBKsLxMUoqafuyiRfvmazDni1o8R9WxGnSvkKV2zw+p3Pnjond4xejrLXOS4UycQHcxQYBbYOIsqH+4tOA3oVsaIJWRxFpgeBFF2WQ/bH5UqpalkBK60cWocQB7/Fg1kmuQX7s6jXbEUntyPXdVe7Cqy3w/MtA8Pqk7WNcjls74sy3r9WqLfCWRw44zHcs5XbqSvipAwYVLWNAP8U7qN6Lqp+LCrQaFB+iZRiUq/TWyxh0K8TsIedV58z9NYaidz14K2E6FXJGRcPz8wDSrISwMeJusPPhoQQNhS5ZtbH4qEEz8j4LqM5YK6JwCmzm3kPhmUR7PrwuiC3tUShd9rSHxWKWfZrIIcyyHNak7BL5HCV/xG1ME/WKMbsdVJw7HQGjDBJjcpmmPrUVgXq4VcM=
