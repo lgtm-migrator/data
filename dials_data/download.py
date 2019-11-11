@@ -32,7 +32,7 @@ def _file_lock(file_handle):
             fcntl.lockf(file_handle, fcntl.LOCK_EX)
         else:
             file_handle.seek(0)
-            msvcrt.locking(file_handle, msvcrt.LK_LOCK, 1)
+            msvcrt.locking(file_handle.fileno(), msvcrt.LK_LOCK, 1)
             # note: says is only blocking for 10 sec
         lock = True
         yield
@@ -42,7 +42,7 @@ def _file_lock(file_handle):
                 fcntl.lockf(file_handle, fcntl.LOCK_UN)
             else:
                 file_handle.seek(0)
-                msvcrt.locking(file_handle, msvcrt.LK_UNLCK, 1)
+                msvcrt.locking(file_handle.fileno(), msvcrt.LK_UNLCK, 1)
 
 
 @contextlib.contextmanager
