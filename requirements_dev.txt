@@ -3,7 +3,6 @@ mock==3.0.5
 pip==19.3.1
 py==1.8.0
 pytest==4.6.6
-pytest-runner==5.1
 pyyaml==5.1.2
 six==1.13.0
 Sphinx==1.8.5
