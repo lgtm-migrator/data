@@ -1,5 +1,5 @@
 py==1.8.1
 pytest==4.6.9
-pyyaml==5.1.2
+pyyaml==5.3
 setuptools==41.2.0
 six==1.14.0
