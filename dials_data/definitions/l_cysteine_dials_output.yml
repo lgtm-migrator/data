@@ -23,9 +23,9 @@ description: >
 data:
   - url: https://dials.diamond.ac.uk/regression_data/l-cysteine_four_sweeps/datablock.json
   - url: https://dials.diamond.ac.uk/regression_data/l-cysteine_four_sweeps/strong.pickle
-  - url: https://github.com/dials/data-files/raw/63421a6a8a0ccb844f4f68ff073172f9e4bd4713/l_cysteine_dials_output/imported.expt
+  - url: https://github.com/dials/data-files/raw/24e1b982fe25006d4d94f17ac1f845481cd2593c/l_cysteine_dials_output/imported.expt
   - url: https://github.com/dials/data-files/raw/24e1b982fe25006d4d94f17ac1f845481cd2593c/l_cysteine_dials_output/indexed.expt
-  - url: https://github.com/dials/data-files/raw/63421a6a8a0ccb844f4f68ff073172f9e4bd4713/l_cysteine_dials_output/strong.refl
+  - url: https://github.com/dials/data-files/raw/24e1b982fe25006d4d94f17ac1f845481cd2593c/l_cysteine_dials_output/strong.refl
   - url: https://github.com/dials/data-files/raw/24e1b982fe25006d4d94f17ac1f845481cd2593c/l_cysteine_dials_output/indexed.refl
   - url: https://github.com/dials/data-files/raw/6c80c466777cb9cf5a14f963485364461e5a6ea5/l_cysteine_integrated/20_integrated.pickle
   - url: https://github.com/dials/data-files/raw/6c80c466777cb9cf5a14f963485364461e5a6ea5/l_cysteine_integrated/20_integrated_experiments.json
