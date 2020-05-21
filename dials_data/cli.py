@@ -9,6 +9,38 @@ import dials_data.download
 import yaml
 
 
+def cli_info(cmd_args):
+    parser = argparse.ArgumentParser(
+        description="Shown information", prog="dials.data info"
+    )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="show more output in machine readable format",
+    )
+    args = parser.parse_args(cmd_args)
+    information = {
+        "repository.location": dials_data.datasets.repository_location(),
+        "version.full": dials_data.__version__,
+        "version.commit": dials_data.__commit__[:7],
+        "version.major": ".".join(dials_data.__version__.split(".")[:2]),
+    }
+    if args.verbose:
+        for k in sorted(information):
+            print("%s=%s" % (k, information[k]))
+    else:
+        print(
+            """
+DIALS regression data manager v{information[version.full]}
+
+repository location: {information[repository.location]}
+""".format(
+                information=information
+            ).strip()
+        )
+
+
 def cli_get(cmd_args):
     parser = argparse.ArgumentParser(
         description="Download datasets", prog="dials.data get"
