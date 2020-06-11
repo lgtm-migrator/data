@@ -47,7 +47,7 @@ master_doc = "index"
 
 # General information about the project.
 project = u"DIALS data"
-copyright = u"2018-2019, Diamond Light Source"
+copyright = u"2018-2020, Diamond Light Source"
 author = u"Markus Gerstel"
 
 # The version info for the project you're documenting, acts as replacement
