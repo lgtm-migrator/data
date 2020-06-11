@@ -243,13 +243,7 @@ class DataFetcher:
             self._cache[test_data] = self._attempt_fetch(test_data, **kwargs)
         return self.result_filter(**self._cache[test_data])
 
-    def _attempt_fetch(self, test_data, min_version=None):
-        if min_version:
-            import warnings
-
-            warnings.warn(
-                "min_version argument is deprecated", DeprecationWarning, stacklevel=2
-            )
+    def _attempt_fetch(self, test_data):
         if self._read_only:
             data_available = fetch_dataset(test_data, pre_scan=True, read_only=True)
         else:
