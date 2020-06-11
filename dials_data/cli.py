@@ -1,5 +1,3 @@
-from __future__ import absolute_import, division, print_function
-
 import argparse
 import sys
 
@@ -28,7 +26,7 @@ def cli_info(cmd_args):
     }
     if args.verbose:
         for k in sorted(information):
-            print("%s=%s" % (k, information[k]))
+            print("{}={}".format(k, information[k]))
     else:
         print(
             """

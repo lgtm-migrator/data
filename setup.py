@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 from setuptools import setup, find_packages
 
@@ -9,7 +8,7 @@ with open("README.rst") as readme_file:
 with open("HISTORY.rst") as history_file:
     history = history_file.read()
 
-requirements = ["pytest", "pyyaml", "setuptools", "six"]
+requirements = ["pytest<5", "pyyaml", "setuptools"]
 setup_requirements = []
 test_requirements = []
 
@@ -21,8 +20,6 @@ setup(
         "Intended Audience :: Developers",
         "License :: OSI Approved :: BSD License",
         "Natural Language :: English",
-        "Programming Language :: Python :: 2",
-        "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
@@ -44,10 +41,11 @@ setup(
     keywords="dials_data",
     name="dials_data",
     packages=find_packages(include=["dials_data"]),
+    python_requires=">=3.5",
     setup_requires=setup_requirements,
     test_suite="tests",
     tests_require=test_requirements,
     url="https://github.com/dials/data",
-    version="2.0.0",
+    version="2.1.0",
     zip_safe=False,
 )

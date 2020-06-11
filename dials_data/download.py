@@ -1,11 +1,9 @@
-from __future__ import absolute_import, division, print_function
-
 import contextlib
 import os
+from urllib.request import urlopen
+from urllib.parse import urlparse
 
 import dials_data.datasets
-from six.moves.urllib.request import urlopen
-from six.moves.urllib.parse import urlparse
 
 fcntl, msvcrt = None, None
 if os.name == "posix":
@@ -78,7 +76,7 @@ def _download_to_file(url, pyfile):
                     break
 
     if file_size and file_size != received:
-        raise EnvironmentError(
+        raise OSError(
             "Error downloading {url}: received {received} bytes instead of expected {file_size} bytes".format(
                 file_size=file_size, received=received, url=url
             )
@@ -218,9 +216,8 @@ class DataFetcher:
         self._read_only = read_only and os.access(self._target_dir.strpath, os.W_OK)
 
     def __repr__(self):
-        return "<%sDataFetcher: %s>" % (
-            "R/O " if self._read_only else "",
-            self._target_dir.strpath,
+        return "<{}DataFetcher: {}>".format(
+            "R/O " if self._read_only else "", self._target_dir.strpath,
         )
 
     def result_filter(self, result, **kwargs):
@@ -246,13 +243,7 @@ class DataFetcher:
             self._cache[test_data] = self._attempt_fetch(test_data, **kwargs)
         return self.result_filter(**self._cache[test_data])
 
-    def _attempt_fetch(self, test_data, min_version=None):
-        if min_version:
-            import warnings
-
-            warnings.warn(
-                "min_version argument is deprecated", DeprecationWarning, stacklevel=2
-            )
+    def _attempt_fetch(self, test_data):
         if self._read_only:
             data_available = fetch_dataset(test_data, pre_scan=True, read_only=True)
         else:

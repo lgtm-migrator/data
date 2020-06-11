@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 #
 # dials_data documentation build configuration file, created by
 # sphinx-quickstart on Fri Jun  9 13:47:02 2017.
@@ -46,16 +45,16 @@ source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
-project = u"DIALS data"
-copyright = u"2018-2019, Diamond Light Source"
-author = u"Markus Gerstel"
+project = "DIALS data"
+copyright = "2018-2020, Diamond Light Source"
+author = "Markus Gerstel"
 
 # The version info for the project you're documenting, acts as replacement
 # for |version| and |release|, also used in various other places throughout
 # the built documents.
 #
 # The short X.Y version.
-version = "2.0.0"
+version = "2.1.0"
 # The full version, including alpha/beta/rc tags.
 release = version
 
@@ -127,8 +126,8 @@ latex_documents = [
     (
         master_doc,
         "dials_data.tex",
-        u"DIALS data Documentation",
-        u"Markus Gerstel",
+        "DIALS data Documentation",
+        "Markus Gerstel",
         "manual",
     )
 ]
@@ -138,7 +137,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, "dials_data", u"DIALS data Documentation", [author], 1)]
+man_pages = [(master_doc, "dials_data", "DIALS data Documentation", [author], 1)]
 
 
 # -- Options for Texinfo output ----------------------------------------
@@ -150,7 +149,7 @@ texinfo_documents = [
     (
         master_doc,
         "dials_data",
-        u"DIALS data Documentation",
+        "DIALS data Documentation",
         author,
         "dials_data",
         "One line description of project.",
