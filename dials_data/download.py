@@ -1,5 +1,3 @@
-from __future__ import absolute_import, division, print_function
-
 import contextlib
 import os
 
@@ -78,7 +76,7 @@ def _download_to_file(url, pyfile):
                     break
 
     if file_size and file_size != received:
-        raise EnvironmentError(
+        raise OSError(
             "Error downloading {url}: received {received} bytes instead of expected {file_size} bytes".format(
                 file_size=file_size, received=received, url=url
             )
@@ -218,9 +216,8 @@ class DataFetcher:
         self._read_only = read_only and os.access(self._target_dir.strpath, os.W_OK)
 
     def __repr__(self):
-        return "<%sDataFetcher: %s>" % (
-            "R/O " if self._read_only else "",
-            self._target_dir.strpath,
+        return "<{}DataFetcher: {}>".format(
+            "R/O " if self._read_only else "", self._target_dir.strpath,
         )
 
     def result_filter(self, result, **kwargs):

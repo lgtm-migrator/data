@@ -1,8 +1,5 @@
-# -*- coding: utf-8 -*-
-
 """Module providing access to all known dataset definitions."""
 
-from __future__ import absolute_import, division, print_function
 
 import hashlib
 import os
@@ -117,11 +114,11 @@ def get_resident_size(ds):
 def _human_readable(num, suffix="B"):
     for unit in ("", "k", "M", "G"):
         if num < 10:
-            return "%.1f%s%s" % (num, unit, suffix)
+            return "{:.1f}{}{}".format(num, unit, suffix)
         if num < 1024:
-            return "%.0f%s%s" % (num, unit, suffix)
+            return "{:.0f}{}{}".format(num, unit, suffix)
         num /= 1024.0
-    return "%.0f%s%s" % (num, "T", suffix)
+    return "{:.0f}{}{}".format(num, "T", suffix)
 
 
 def list_known_definitions(ds_list, quiet=False):

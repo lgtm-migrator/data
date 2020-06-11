@@ -1,11 +1,8 @@
-# -*- coding: utf-8 -*-
-
 """
 DIALS Regression Data Manager
 https://github.com/dials/data
 """
 
-from __future__ import absolute_import, division, print_function
 
 import pytest
 import warnings
