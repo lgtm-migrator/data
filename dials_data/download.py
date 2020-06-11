@@ -1,9 +1,9 @@
 import contextlib
 import os
+from urllib.request import urlopen
+from urllib.parse import urlparse
 
 import dials_data.datasets
-from six.moves.urllib.request import urlopen
-from six.moves.urllib.parse import urlparse
 
 fcntl, msvcrt = None, None
 if os.name == "posix":
