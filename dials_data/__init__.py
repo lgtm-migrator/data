@@ -10,7 +10,7 @@ import warnings
 __all__ = ["pytest_addoption", "dials_data"]
 __author__ = """Markus Gerstel"""
 __email__ = "dials-support@lists.sourceforge.net"
-__version__ = "2.0.0"
+__version__ = "2.1.0"
 __commit__ = ""
 __version_tuple__ = tuple(int(x) for x in __version__.split("."))
 
