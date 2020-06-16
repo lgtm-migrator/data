@@ -4,27 +4,7 @@ update_configs:
     directory: "/"
     update_schedule: "monthly"
     ignored_updates:
-      # bump2version 1 requires Python 3
-      - match:
-          dependency_name: "bump2version"
-          version_requirement: ">=1"
       # mock 4 requires Python 3.6+
       - match:
           dependency_name: "mock"
           version_requirement: ">=4"
-      # pytest 5 requires Python 3
-      - match:
-          dependency_name: "pytest"
-          version_requirement: ">=5"
-      # setuptools 45 requires Python 3
-      - match:
-          dependency_name: "setuptools"
-          version_requirement: ">=45"
-      # sphinx 2 requires Python 3
-      - match:
-          dependency_name: "Sphinx"
-          version_requirement: ">=2"
-      # twine 3 requires Python 3
-      - match:
-          dependency_name: "twine"
-          version_requirement: ">=3"
