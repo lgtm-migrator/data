@@ -1,33 +1,34 @@
-import pkg_resources
+import collections
+import importlib_resources
 import pytest
 import string
 import yaml
 
-definition_yamls = {
-    fn
-    for fn in pkg_resources.resource_listdir("dials_data", "definitions")
-    if fn.endswith(".yml")
-}
-hashinfo_yamls = {
-    fn
-    for fn in pkg_resources.resource_listdir("dials_data", "hashinfo")
-    if fn.endswith(".yml")
-}
+definition_yamls = collections.OrderedDict(
+    (fn.name, fn)
+    for fn in importlib_resources.files("dials_data").joinpath("definitions").iterdir()
+    if fn.suffix != ".MD"
+)
+hashinfo_yamls = collections.OrderedDict(
+    (fn.name, fn)
+    for fn in importlib_resources.files("dials_data").joinpath("hashinfo").iterdir()
+    if fn.suffix != ".MD"
+)
 
 
-def is_valid_name(filename):
-    if not filename.endswith(".yml") or len(filename) <= 4:
+def is_valid_name(fileobj):
+    if fileobj.suffix != ".yml" or len(fileobj.stem) <= 1:
         return False
     allowed_characters = frozenset(string.ascii_letters + string.digits + "_")
-    return all(c in allowed_characters for c in filename[:-4])
+    return all(c in allowed_characters for c in fileobj.stem)
 
 
-@pytest.mark.parametrize("yaml_file", definition_yamls)
+@pytest.mark.parametrize(
+    "yaml_file", list(definition_yamls.values()), ids=list(definition_yamls.keys())
+)
 def test_yaml_file_is_valid_definition(yaml_file):
     assert is_valid_name(yaml_file)
-    definition = yaml.safe_load(
-        pkg_resources.resource_stream("dials_data", "definitions/" + yaml_file).read()
-    )
+    definition = yaml.safe_load(yaml_file.read_bytes())
     fields = set(definition)
     required = {"name", "data", "description"}
     optional = {"license", "url", "author"}
@@ -39,15 +40,15 @@ def test_yaml_file_is_valid_definition(yaml_file):
     )
 
 
-@pytest.mark.parametrize("yaml_file", hashinfo_yamls)
+@pytest.mark.parametrize(
+    "yaml_file", list(hashinfo_yamls.values()), ids=list(hashinfo_yamls.keys())
+)
 def test_yaml_file_is_valid_hashinfo(yaml_file):
     assert is_valid_name(yaml_file)
     assert (
-        yaml_file in definition_yamls
+        yaml_file.name in definition_yamls
     ), "hashinfo file present without corresponding definition file"
-    hashinfo = yaml.safe_load(
-        pkg_resources.resource_stream("dials_data", "hashinfo/" + yaml_file).read()
-    )
+    hashinfo = yaml.safe_load(yaml_file.read_bytes())
     fields = set(hashinfo)
     required = {"definition", "formatversion", "verify"}
     assert fields >= required, "Required fields missing: " + str(
