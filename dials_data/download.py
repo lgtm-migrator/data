@@ -1,5 +1,6 @@
 import contextlib
 import os
+import tarfile
 from urllib.request import urlopen
 from urllib.parse import urlparse
 
@@ -131,6 +132,7 @@ def fetch_dataset(
         {
             "url": source["url"],
             "file": target_dir.join(os.path.basename(urlparse(source["url"]).path)),
+            "files": source.get("files"),
             "verify": hashinfo,
         }
         for source, hashinfo in zip(definition["data"], integrity_info["verify"])
@@ -174,9 +176,11 @@ def _fetch_filelist(filelist, file_hash):
                             "hash", source["verify"]["hash"], file_hash(source["file"])
                         )
 
+            downloaded = False
             if not valid:
                 print("Downloading {}".format(source["url"]))
                 _download_to_file(source["url"], source["file"])
+                downloaded = True
 
             # verify
             valid = True
@@ -192,6 +196,23 @@ def _fetch_filelist(filelist, file_hash):
             else:
                 source["verify"]["size"] = fileinfo["size"]
                 source["verify"]["hash"] = fileinfo["hash"]
+
+        # If the file is a tar archive, then decompress
+        if source["files"]:
+            target_dir = source["file"].dirpath()
+            if downloaded or not all((target_dir / f).check(file=1) for f in source["files"]):
+                # If the file has been (re)downloaded, or we don't have all the requested
+                # files from the archive, then we need to decompress the tar archive
+                print("Decompressing {file}".format(file=source['file']))
+                with tarfile.open(source["file"].strpath) as tar:
+                    for f in source["files"]:
+                        try:
+                            tar.extract(f, path=source["file"].dirname)
+                        except KeyError:
+                            print(
+                                "Expected file {file} not present in tar archive {tarfile}".format(
+                                    file=f, tarfile=source["file"])
+                            )
 
 
 class DataFetcher:
