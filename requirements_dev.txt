@@ -3,7 +3,7 @@ importlib_resources>=1.1
 mock==3.0.5
 pip==20.1.1
 py==1.8.1
-pytest==4.6.10
+pytest==5.4.3
 pyyaml==5.3.1
 Sphinx==1.8.5
 sphinx_rtd_theme==0.4.3
