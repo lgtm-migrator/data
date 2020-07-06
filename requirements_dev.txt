@@ -2,11 +2,11 @@ bump2version==0.5.11
 importlib_resources>=1.1
 mock==3.0.5
 pip==20.1.1
-py==1.8.1
+py==1.9.0
 pytest==5.4.3
 pyyaml==5.3.1
-Sphinx==1.8.5
-sphinx_rtd_theme==0.4.3
+Sphinx==3.1.1
+sphinx_rtd_theme==0.5.0
 tox==3.16.1
 twine==1.13.0
 wheel==0.34.2

@@ -8,3 +8,7 @@ update_configs:
       - match:
           dependency_name: "mock"
           version_requirement: ">=4"
+      # twine 2 requires Python 3.6+
+      - match:
+          dependency_name: "twine"
+          version_requirement: ">=2"
