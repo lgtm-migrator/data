@@ -119,6 +119,10 @@ def main():
 The most commonly used commands are:
    list     List available datasets
    get      Download datasets
+
+Each command has its own set of parameters, and you can get more information
+by running dials.data <command> --help
+
 """.format(
             version=version
         ),
