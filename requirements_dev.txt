@@ -1,7 +1,7 @@
 bump2version==0.5.11
 importlib_resources>=1.1
 mock==3.0.5
-pip==20.1.1
+pip==20.2.2
 py==1.9.0
 pytest==5.4.3
 pyyaml==5.3.1
