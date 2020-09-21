@@ -1,7 +1,7 @@
 import dials_data
 import dials_data.datasets
 import dials_data.download
-import mock
+from unittest import mock
 
 
 def test_all_datasets_can_be_parsed():
