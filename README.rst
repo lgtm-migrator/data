@@ -30,10 +30,6 @@ DIALS Regression Data Manager
         :target: https://pypi.org/project/dials_data/
         :alt: Supported Python versions
 
-.. image:: https://flat.badgen.net/dependabot/dials/data?icon=dependabot
-        :target: https://github.com/dials/data/pulls
-        :alt: Dependabot dependency updates
-
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
         :target: https://github.com/ambv/black
         :alt: Code style: black
