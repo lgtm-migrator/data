@@ -1,11 +1,11 @@
-bump2version==1.0.0
+bump2version==1.0.1
 importlib_resources>=1.1
-pip==20.2.3
+pip==20.2.4
 py==1.9.0
-pytest==6.1.0
+pytest==6.1.2
 pyyaml==5.3.1
 Sphinx==3.2.1
 sphinx_rtd_theme==0.5.0
-tox==3.20.0
+tox==3.20.1
 twine==3.2.0
 wheel==0.35.1
