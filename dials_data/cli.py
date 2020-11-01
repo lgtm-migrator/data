@@ -68,18 +68,18 @@ def cli_get(cmd_args):
 
     repository = dials_data.datasets.repository_location()
     if not args.quiet:
-        print("Repository location: {repo.strpath}\n".format(repo=repository))
+        print(f"Repository location: {repository.strpath}\n")
 
     for ds in args.dataset:
         if not args.quiet:
-            print("Downloading dataset {}".format(ds))
+            print(f"Downloading dataset {ds}")
         hashinfo = dials_data.download.fetch_dataset(
             ds, ignore_hashinfo=args.create_hashinfo, verify=args.verify
         )
         if args.create_hashinfo:
             if not args.quiet:
-                print("Writing file integrity information to {}.yml".format(ds))
-            with open("{}.yml".format(ds), "w") as fh:
+                print(f"Writing file integrity information to {ds}.yml")
+            with open(f"{ds}.yml", "w") as fh:
                 yaml.dump(hashinfo, fh, default_flow_style=False)
         if args.quiet:
             print(repository.join(ds).strpath)
@@ -141,4 +141,4 @@ by running dials.data <command> --help
         return subcommand(sys.argv[2:])
     parser.print_help()
     print()
-    sys.exit("Unrecognized command: {}".format(args.subcommand))
+    sys.exit(f"Unrecognized command: {args.subcommand}")
