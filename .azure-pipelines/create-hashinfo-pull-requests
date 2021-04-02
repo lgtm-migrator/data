@@ -1,0 +1,48 @@
+#!/bin/bash -eu
+
+echo "##[section]Setting up git configuration"
+git config --global user.name "Azure on github.com/dials/data"
+git config --global user.email "dials@noreply.github.com"
+git config credential.helper "store --file=.git/credentials"
+echo "https://${GITHUB_TOKEN}:@github.com" > .git/credentials
+echo
+
+echo "##[section]Installing github cli"
+pushd .. >/dev/null
+wget -nv https://github.com/github/hub/releases/download/v2.6.0/hub-linux-amd64-2.6.0.tgz -O - | tar xz
+export PATH=$(pwd)/hub-linux-amd64-2.6.0/bin/:${PATH}
+popd >/dev/null
+hub --version
+echo
+
+echo "##[section]Open pull requests:"
+declare -A UPDATEBRANCHES
+for BRANCH in $(hub pr list -b master -f '%H%n'); do
+  echo ${BRANCH}
+  UPDATEBRANCHES[${BRANCH}]=1
+done
+echo
+
+echo "##[section]Checking for required definition updates..."
+echo Base commit is ${BUILD_SOURCEVERSION}
+for DATASET in $(python -c "import dials_data.datasets as ddd; print('\n'.join(ddd.fileinfo_dirty))")
+do
+  echo Checking ${DATASET}
+  [ ${UPDATEBRANCHES[update-${DATASET}]+x} ] || {
+    echo Creating/Updating branch ${DATASET}
+    git checkout -b "update-${DATASET}"
+    git reset --hard ${BUILD_SOURCEVERSION}
+    git commit --allow-empty -m "Trigger update of dataset ${DATASET}"
+    git push -f -u origin "update-${DATASET}"
+    echo
+    echo Generating pull request:
+    hub pull-request -f -m "Update dataset ${DATASET}
+
+This is an automated pull request to trigger an update of the hash information on dataset \`${DATASET}\`.
+
+These pull requests normally consist of two commits: the first one is an empty commit that triggers the
+hash information update, and the second commit is the actual hash information update. Once both commits
+have appeared, the tests have passed, and you are happy with the results you can squash merge the PR.
+"
+  }
+done

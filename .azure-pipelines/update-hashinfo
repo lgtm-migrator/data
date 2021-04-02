@@ -1,0 +1,45 @@
+#!/bin/bash -eu
+
+echo "##[section]Setting up git configuration"
+git config --global user.name "Azure on github.com/dials/data"
+git config --global user.email "dials@noreply.github.com"
+git config credential.helper "store --file=.git/credentials"
+echo "https://${GITHUB_TOKEN}:@github.com" > .git/credentials
+echo
+
+git checkout "${BUILD_SOURCEBRANCHNAME}"
+CANDIDATE=$(echo ${BUILD_SOURCEBRANCHNAME} | cut -c 8-)
+if [[ -z $CANDIDATE ]]; then
+  echo Could not determine dataset candidate to update
+  exit 1
+fi
+
+echo "##[section]Considering updating information on dataset ${CANDIDATE}"
+for DATASET in $(dials.data list --quiet --missing-hashinfo)
+do
+  if [[ "${DATASET}" == "${CANDIDATE}" ]]; then
+    echo "##[section]Updating dataset ${DATASET}"
+    dials.data get --create-hashinfo ${DATASET}
+    mv ${DATASET}.yml dials_data/hashinfo/${DATASET}.yml
+    if [ -z "$(git status --porcelain)" ]; then
+      echo Working directory remained clean. Something went wrong.
+      exit 1
+    fi
+    git add dials_data/hashinfo/${DATASET}.yml
+    echo
+    echo "##[section]Committing update"
+    git commit -m "Update file information for dataset ${DATASET}"
+    # Ensure dataset will not be downloaded again in the next round
+    dials.data list --quiet --missing-hashinfo | tee remaining-datasets
+    grep -- "^${DATASET}$" < remaining-datasets && {
+      echo Hashinfo sanity check failed
+      exit 1
+    }
+    git push
+    echo Success.
+    exit 0
+  fi
+done
+
+echo "##[error]Could not identify candidate to update. Something went wrong"
+exit 1

@@ -1,12 +1,4 @@
-#!/bin/bash
-
-set -e
-
-RESTRICT_REPOSITORY="dials/data"
-if [[ "${TRAVIS_REPO_SLUG}" != "${RESTRICT_REPOSITORY}" ]]; then
-  echo Skipping step outside of ${RESTRICT_REPOSITORY} repository
-  exit 0
-fi
+#!/bin/bash -eu
 
 VERSION=$(grep "^__version__" dials_data/__init__.py | cut -d'"' -f 2)
 BASETAG=v${VERSION}
@@ -19,8 +11,7 @@ git tag --list | grep "^${BASETAG}$" || {
   else
     echo "Tag not found on remote. Let's make a new one!"
     git tag ${BASETAG}
-    # assume git credentials were previously set in update-hashinfo
-    git push origin ${BASETAG}
+    echo "##[warning]Tag ${BASETAG} is missing on your repository. Packages generated during the build will not have reliable version numbers"
   fi
 }
 

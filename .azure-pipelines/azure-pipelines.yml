@@ -1,0 +1,237 @@
+stages:
+- stage: static
+  displayName: Static Analysis
+  jobs:
+  - job: checks
+    displayName: static code analysis
+    pool:
+      vmImage: ubuntu-20.04
+    steps:
+      # Use Python >=3.7 for syntax validation
+      - task: UsePythonVersion@0
+        displayName: Set up python
+        inputs:
+          versionSpec: 3.7
+
+      - bash: |
+          python .azure-pipelines/syntax-validation.py
+        displayName: Syntax validation
+
+      - bash: |
+          pip install flake8
+          python .azure-pipelines/flake8-validation.py
+        displayName: Flake8 validation
+
+      # Set up constants for further build steps
+      - bash: |
+          echo "##vso[task.setvariable variable=BUILD_REPOSITORY_NAME;isOutput=true]${BUILD_REPOSITORY_NAME}"
+          echo "##vso[task.setvariable variable=BUILD_SOURCEBRANCH;isOutput=true]${BUILD_SOURCEBRANCH}"
+          diff -q <(git rev-parse HEAD~0^{tree}) <(git rev-parse HEAD~1^{tree}) >/dev/null && {
+            # Current git commit and parent commit have 100% identical files
+            echo "##vso[task.setvariable variable=AUTOMATED_COMMIT;isOutput=true]true"
+          } || {
+            echo "##vso[task.setvariable variable=AUTOMATED_COMMIT;isOutput=true]false"
+          }
+        displayName: Set up build constants
+        name: constants
+
+      - bash: |
+          echo BUILD_REPOSITORY_NAME = $(constants.BUILD_REPOSITORY_NAME)
+          echo BUILD_SOURCEBRANCH = $(constants.BUILD_SOURCEBRANCH)
+          echo AUTOMATED_COMMIT = $(constants.AUTOMATED_COMMIT)
+
+          if [ "$(constants.BUILD_REPOSITORY_NAME)" == "dials/data" ] && \
+             [ "$(constants.AUTOMATED_COMMIT)" == "true" ] && \
+             [[ "$(constants.BUILD_SOURCEBRANCH)" == refs/pull/* ]]; then
+            echo "##[error]Intentionally marking the initial commit of the automated pull request as failed."
+            echo "The pull request requires a second, meaningful commit, which will run normally."
+            exit 1
+          fi
+        displayName: Verify constants
+
+- stage: build
+  displayName: Build
+  dependsOn:
+  - static
+  condition: and(succeeded(),
+                 not(or(and(eq(dependencies.static.outputs['checks.constants.AUTOMATED_COMMIT'], 'true'),
+                            startsWith(dependencies.static.outputs['checks.constants.BUILD_SOURCEBRANCH'], 'refs/pull/')),
+                        startsWith(dependencies.static.outputs['checks.constants.BUILD_SOURCEBRANCH'], 'refs/heads/update-'))))
+             # Skip entire build step on pointless pull request and hash update builds
+  jobs:
+  - job: build
+    displayName: build package
+    pool:
+      vmImage: ubuntu-20.04
+    steps:
+      - task: UsePythonVersion@0
+        displayName: Set up python
+        inputs:
+          versionSpec: 3.9
+
+      - bash: |
+          pip install -r requirements_dev.txt
+        displayName: Install dependencies
+
+      - bash: .azure-pipelines/update-package-version
+        displayName: Set package version
+
+      - bash: |
+          set -ex
+          python setup.py sdist bdist_wheel
+          mkdir -p dist/pypi
+          shopt -s extglob
+          mv -v dist/!(pypi) dist/pypi
+          git archive HEAD | gzip > dist/repo-source.tar.gz
+          ls -laR dist
+        displayName: Build python package
+
+      - task: PublishBuildArtifacts@1
+        displayName: Store artifact
+        inputs:
+          pathToPublish: dist/
+          artifactName: package
+
+      - bash: |
+          twine check dist/pypi/*
+          python setup.py checkdocs
+        displayName: Check package description
+
+- stage: update
+  displayName: Update hashes
+  dependsOn:
+  - static
+  condition: and(succeeded(),
+                 eq(dependencies.static.outputs['checks.constants.BUILD_REPOSITORY_NAME'], 'dials/data'),
+                 startsWith(dependencies.static.outputs['checks.constants.BUILD_SOURCEBRANCH'], 'refs/heads/update-'),
+                 eq(dependencies.static.outputs['checks.constants.AUTOMATED_COMMIT'], 'true'))
+             # Only run this stage on automated commits on 'update-...' branches on the main repository
+  jobs:
+  - job: update
+    displayName: Update hash information
+    pool:
+      vmImage: ubuntu-20.04
+    steps:
+      - task: UsePythonVersion@0
+        displayName: Set up python
+        inputs:
+          versionSpec: 3.9
+
+      - script: |
+          pip install -r requirements.txt
+          pip install -e .
+        displayName: Install package
+
+      - bash: .azure-pipelines/update-hashinfo
+        displayName: Update hash information
+        env:
+          GITHUB_TOKEN: $(GITHUB_TOKEN)
+
+      - bash: rm .git/credentials
+        displayName: Remove git credentials
+        condition: always()
+
+- stage: tests
+  displayName: Run unit tests
+  dependsOn:
+  - static
+  - build
+  condition: and(succeeded(),
+                 not(and(eq(dependencies.static.outputs['checks.constants.BUILD_REPOSITORY_NAME'], 'dials/data'),
+                         startsWith(dependencies.static.outputs['checks.constants.BUILD_SOURCEBRANCH'], 'refs/heads/update-'))))
+             # Do not need to bother running tests on automated 'update-...' branches
+  jobs:
+  - job: linux
+    pool:
+      vmImage: ubuntu-20.04
+    strategy:
+      matrix:
+        python36:
+          PYTHON_VERSION: 3.6
+        python37:
+          PYTHON_VERSION: 3.7
+        python38:
+          PYTHON_VERSION: 3.8
+        python39:
+          PYTHON_VERSION: 3.9
+    steps:
+    - template: ci.yml
+
+- stage: deploy
+  displayName: Publish release
+  dependsOn:
+  - static
+  - tests
+  condition: and(succeeded(),
+                 eq(dependencies.static.outputs['checks.constants.BUILD_REPOSITORY_NAME'], 'dials/data'),
+                 eq(dependencies.static.outputs['checks.constants.BUILD_SOURCEBRANCH'], 'refs/heads/master'))
+  jobs:
+  - job: pypi
+    displayName: Publish pypi release
+    pool:
+      vmImage: ubuntu-20.04
+    steps:
+      - checkout: none
+
+      - task: UsePythonVersion@0
+        displayName: Set up python
+        inputs:
+          versionSpec: 3.8
+
+      - task: DownloadBuildArtifacts@0
+        displayName: Get pre-built package
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'package'
+          downloadPath: '$(System.ArtifactsDirectory)'
+
+      - script: |
+          pip install -U pip
+          pip install twine
+        displayName: Install twine
+
+      - task: TwineAuthenticate@1
+        displayName: Set up credentials
+        inputs:
+          pythonUploadServiceConnection: pypi-dials-data
+
+      - bash: |
+          python -m twine upload -r pypi-dials-data --config-file $(PYPIRC_PATH) $(System.ArtifactsDirectory)/package/pypi/*.tar.gz $(System.ArtifactsDirectory)/package/pypi/*.whl
+        displayName: Publish package
+
+- stage: hashinfo
+  displayName: Check missing hashes
+  dependsOn:
+  - static
+  - build
+  - tests
+  condition: and(succeeded(),
+                 eq(dependencies.static.outputs['checks.constants.BUILD_SOURCEBRANCH'], 'refs/heads/master'),
+                 eq(dependencies.static.outputs['checks.constants.BUILD_REPOSITORY_NAME'], 'dials/data'))
+             # only run this job in the main branch of the main repository
+  jobs:
+  - job: hashinfo
+    displayName: Check hashes
+    pool:
+      vmImage: ubuntu-20.04
+    steps:
+      - task: UsePythonVersion@0
+        displayName: Set up python
+        inputs:
+          versionSpec: 3.9
+
+      - script: |
+          pip install -r requirements.txt
+          pip install -e .
+        displayName: Install package
+
+      - bash: .azure-pipelines/create-hashinfo-pull-requests
+        displayName: Create pull requests
+        timeoutInMinutes: 5
+        env:
+          GITHUB_TOKEN: $(GITHUB_TOKEN)
+
+      - bash: rm .git/credentials
+        displayName: Remove git credentials
+        condition: always()
