@@ -2,9 +2,9 @@ import contextlib
 import errno
 import os
 import tarfile
+from pathlib import Path
 from urllib.request import urlopen
 from urllib.parse import urlparse
-
 import dials_data.datasets
 
 fcntl, msvcrt = None, None
@@ -261,18 +261,39 @@ class DataFetcher:
         """
         return result
 
-    def __call__(self, test_data, **kwargs):
+    def __call__(self, test_data, pathlib=None, **kwargs):
         """
         Return the location of a dataset, transparently downloading it if
         necessary and possible.
         The return value can be manipulated by overriding the result_filter
         function.
         :param test_data: name of the requested dataset.
-        :return: A py.path.local object pointing to the dataset, or False
+        :param pathlib: Whether to return the result as a Python pathlib object.
+                        The default for this setting is 'False' for now (leading
+                        to a py.path.local object being returned), but the default
+                        will change to 'True' in a future dials.data release.
+                        Set to 'True' for forward compatibility.
+        :return: A pathlib or py.path.local object pointing to the dataset, or False
                  if the dataset is not available.
         """
         if test_data not in self._cache:
             self._cache[test_data] = self._attempt_fetch(test_data, **kwargs)
+        # TODO: Enable deprecation warning here and in the related test
+        # if pathlib is None:
+        #    warnings.warn(
+        #        "The DataFetcher currently returns py.path.local() objects. "
+        #        "This will in the future change to pathlib.Path() objects. "
+        #        "You can either add a pathlib=True argument to obtain a pathlib.Path() object, "
+        #        "or pathlib=False to silence this warning for now.",
+        #        DeprecationWarning,
+        #        stacklevel=2,
+        #    )
+        if pathlib and self._cache[test_data]["result"]:
+            result = {
+                **self._cache[test_data],
+                "result": Path(self._cache[test_data]["result"]),
+            }
+            return self.result_filter(**result)
         return self.result_filter(**self._cache[test_data])
 
     def _attempt_fetch(self, test_data):

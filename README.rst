@@ -52,18 +52,15 @@ Installation
 
 To install this package in a normal Python environment, run::
 
-    install dials_data
+    pip install dials_data
 
 and then you can use it with::
 
     dials.data
 
-To install ``dials_data`` in a DIALS installation you need to run::
+If you are in a conda environment you can instead run::
 
-    libtbx.pip install dials_data
-
-followed by a run of either ``libtbx.configure`` or ``make reconf``
-to get access to the command line tool.
+    conda install -c conda-forge dials_data
 
 For more details please take a look at the
 `installation and usage page <https://dials-data.readthedocs.io/en/latest/installation.html>`__.

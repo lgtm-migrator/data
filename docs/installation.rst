@@ -28,16 +28,11 @@ However you do not need to install ``dials_data`` from source. You can simply ru
 
     pip install -U dials_data
 
-or, in a cctbx/DIALS environment::
+or, in a conda environment::
 
-    libtbx.pip install -U dials_data
+    conda install -c conda-forge dials_data
 
 This will install or update an existing installation of ``dials_data``.
-
-In a cctbx/DIALS environment you may have to do a round of
-``libtbx.configure`` or ``make reconf`` to enable the ``dials_data``
-command line utilities.
-In a normal Python environment this is not required.
 
 You can then run your tests as usual using::
 
@@ -54,7 +49,7 @@ to actually enable those tests depending on files from ``dials_data``.
 As a developer to write tests with ``dials_data``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Install ``dials_data`` using ``pip`` as above.
+Install ``dials_data`` as above.
 
 If your test is written in pytest and you use the fixture provided by
 ``dials_data`` then you can use regression datasets in your test by
@@ -75,6 +70,13 @@ the test is skipped.
 The return value (``location``) is a ``py.path.local`` object pointing
 to the directory containing the requested dataset.
 
+To get a python ``pathlib.Path`` object instead you can call::
+
+.. code-block:: python
+
+    def test_accessing_a_dataset(dials_data):
+        location = dials_data("x4wide", pathlib=True)
+
 You can see a list of all available datasets by running::
 
     dials.data list
@@ -91,7 +93,7 @@ dummy fixture to your ``conftest.py``, for example:
     import pytest
     try:
         import dials_data as _  # noqa: F401
-    except ImportError:
+    except ModuleNotFoundError:
         @pytest.fixture(scope="session")
         def dials_data():
             pytest.skip("Test requires python package dials_data")
@@ -126,19 +128,13 @@ have to run::
 
     python setup.py develop
 
-or in a cctbx/DIALS environment::
-
-    libtbx.python setup.py develop
-
-followed by a round of ``libtbx.configure`` or ``make reconf``.
 This will update your python package index and install/update any
 ``dials_data`` dependencies if necessary.
 
 To switch back from using your checked out version to the 'official'
 version of ``dials_data`` you can uninstall it with::
 
-    pip uninstall dials_data # or
-    libtbx.pip uninstall dials_data
+    pip uninstall dials_data
 
 and then reinstall it following the
 `instructions at the top of this page <basic-installation_>`__.
