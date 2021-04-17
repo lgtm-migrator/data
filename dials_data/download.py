@@ -208,10 +208,12 @@ def _fetch_filelist(filelist, file_hash):
         # If the file is a tar archive, then decompress
         if source["files"]:
             target_dir = source["file"].dirpath()
-            if downloaded or not all((target_dir / f).check(file=1) for f in source["files"]):
+            if downloaded or not all(
+                (target_dir / f).check(file=1) for f in source["files"]
+            ):
                 # If the file has been (re)downloaded, or we don't have all the requested
                 # files from the archive, then we need to decompress the tar archive
-                print("Decompressing {file}".format(file=source['file']))
+                print("Decompressing {file}".format(file=source["file"]))
                 with tarfile.open(source["file"].strpath) as tar:
                     for f in source["files"]:
                         try:
@@ -219,7 +221,8 @@ def _fetch_filelist(filelist, file_hash):
                         except KeyError:
                             print(
                                 "Expected file {file} not present in tar archive {tarfile}".format(
-                                    file=f, tarfile=source["file"])
+                                    file=f, tarfile=source["file"]
+                                )
                             )
 
 
