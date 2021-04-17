@@ -1,4 +1,5 @@
 import contextlib
+import errno
 import os
 import tarfile
 from urllib.request import urlopen
@@ -31,8 +32,15 @@ def _file_lock(file_handle):
             fcntl.lockf(file_handle, fcntl.LOCK_EX)
         else:
             file_handle.seek(0)
-            msvcrt.locking(file_handle.fileno(), msvcrt.LK_LOCK, 1)
-            # note: says is only blocking for 10 sec
+            while True:
+                try:
+                    msvcrt.locking(file_handle.fileno(), msvcrt.LK_LOCK, 1)
+                    # Call will only block for 10 sec and then raise
+                    # OSError: [Errno 36] Resource deadlock avoided
+                    break  # lock obtained
+                except OSError as e:
+                    if e.errno != errno.EDEADLK:
+                        raise
         lock = True
         yield
     finally:
