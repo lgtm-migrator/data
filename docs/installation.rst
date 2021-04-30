@@ -70,7 +70,7 @@ the test is skipped.
 The return value (``location``) is a ``py.path.local`` object pointing
 to the directory containing the requested dataset.
 
-To get a python ``pathlib.Path`` object instead you can call::
+To get a python ``pathlib.Path`` object instead you can call:
 
 .. code-block:: python
 
