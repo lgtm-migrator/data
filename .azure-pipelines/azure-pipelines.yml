@@ -18,7 +18,7 @@ stages:
         displayName: Syntax validation
 
       - bash: |
-          pip install flake8
+          pip install --disable-pip-version-check flake8
           python .azure-pipelines/flake8-validation.py
         displayName: Flake8 validation
 
@@ -70,7 +70,7 @@ stages:
           versionSpec: 3.9
 
       - bash: |
-          pip install -r requirements_dev.txt
+          pip install --disable-pip-version-check -r requirements_dev.txt
         displayName: Install dependencies
 
       - bash: .azure-pipelines/update-package-version
@@ -118,8 +118,8 @@ stages:
           versionSpec: 3.9
 
       - script: |
-          pip install -r requirements.txt
-          pip install -e .
+          pip install --disable-pip-version-check -r requirements.txt
+          pip install --disable-pip-version-check -e .
         displayName: Install package
 
       - bash: .azure-pipelines/update-hashinfo
@@ -144,6 +144,21 @@ stages:
   - job: linux
     pool:
       vmImage: ubuntu-20.04
+    strategy:
+      matrix:
+        python36:
+          PYTHON_VERSION: 3.6
+        python37:
+          PYTHON_VERSION: 3.7
+        python38:
+          PYTHON_VERSION: 3.8
+        python39:
+          PYTHON_VERSION: 3.9
+    steps:
+    - template: ci.yml
+  - job: macOS
+    pool:
+      vmImage: macOS-latest
     strategy:
       matrix:
         python36:
@@ -187,8 +202,7 @@ stages:
           downloadPath: '$(System.ArtifactsDirectory)'
 
       - script: |
-          pip install -U pip
-          pip install twine
+          pip install --disable-pip-version-check twine
         displayName: Install twine
 
       - task: TwineAuthenticate@1
@@ -222,8 +236,8 @@ stages:
           versionSpec: 3.9
 
       - script: |
-          pip install -r requirements.txt
-          pip install -e .
+          pip install --disable-pip-version-check -r requirements.txt
+          pip install --disable-pip-version-check -e .
         displayName: Install package
 
       - bash: .azure-pipelines/create-hashinfo-pull-requests
