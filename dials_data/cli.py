@@ -22,7 +22,10 @@ def cli_info(cmd_args):
         "repository.location": dials_data.datasets.repository_location(),
         "version.full": dials_data.__version__,
         "version.commit": dials_data.__commit__[:7],
-        "version.major": ".".join(dials_data.__version__.split(".")[:2]),
+        "version.major": ".".join(
+            dials_data.__version__.split(".")[:2]
+        ),  # TODO: remove this key after 3.0 release
+        "version.major_minor": ".".join(dials_data.__version__.split(".")[:2]),
     }
     if args.verbose:
         for k in sorted(information):
