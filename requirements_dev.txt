@@ -1,9 +1,7 @@
 collective.checkdocs==0.2
+coverage==5.5
 importlib_resources>=1.1
 py==1.10.0
 pytest==6.2.3
-pytest-cov==2.11.1
 pyyaml==5.4.1
-Sphinx==3.5.4
-sphinx_rtd_theme==0.5.2
 wheel==0.36.2

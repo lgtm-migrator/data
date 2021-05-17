@@ -53,19 +53,21 @@ def test_datafetcher_constructs_py_path(fetcher, root):
 @mock.patch("dials_data.datasets.repository_location")
 @mock.patch("dials_data.download.fetch_dataset")
 def test_datafetcher_constructs_path(fetcher, root):
-    root.return_value = py.path.local("/tmp/root")
+    test_path = py.path.local("/tmp/root")
+    root.return_value = test_path
     fetcher.return_value = True
 
     df = dials_data.download.DataFetcher(read_only=True)
     ds = df("dataset", pathlib=True)
-    assert ds == pathlib.Path("/tmp/root/dataset")
+    assert ds == pathlib.Path(test_path) / "dataset"
+
     assert isinstance(ds, pathlib.Path)
     fetcher.assert_called_once_with(
         "dataset", pre_scan=True, read_only=False, download_lockdir=mock.ANY
     )
 
     ds = df("dataset")
-    assert ds == pathlib.Path("/tmp/root/dataset")
+    assert ds == pathlib.Path(test_path) / "dataset"
     assert not isinstance(
         ds, pathlib.Path
     )  # default is currently to return py.path.local()

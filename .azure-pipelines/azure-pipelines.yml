@@ -171,6 +171,21 @@ stages:
           PYTHON_VERSION: 3.9
     steps:
     - template: ci.yml
+  - job: windows
+    pool:
+      vmImage: windows-latest
+    strategy:
+      matrix:
+        python36:
+          PYTHON_VERSION: 3.6
+        python37:
+          PYTHON_VERSION: 3.7
+        python38:
+          PYTHON_VERSION: 3.8
+        python39:
+          PYTHON_VERSION: 3.9
+    steps:
+    - template: ci-windows.yml
 
 - stage: deploy
   displayName: Publish release
