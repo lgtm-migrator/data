@@ -38,6 +38,12 @@ def test_yaml_file_is_valid_definition(yaml_file):
     assert fields <= (required | optional), "Unknown fields present: " + str(
         sorted(fields - required - optional)
     )
+    assert definition["data"], "Data definition is empty"
+    for n, entry in enumerate(definition["data"]):
+        assert isinstance(
+            entry, dict
+        ), f"Data definition #{n+1} contains non-dictionary entry: {entry!r}"
+        assert "url" in entry, f"Data definition #{n+1} does not specify a URL"
 
 
 @pytest.mark.parametrize(

@@ -18,6 +18,7 @@ stages:
         displayName: Syntax validation
 
       - bash: |
+          set -eux
           pip install --disable-pip-version-check flake8
           python .azure-pipelines/flake8-validation.py
         displayName: Flake8 validation
@@ -118,6 +119,7 @@ stages:
           versionSpec: 3.9
 
       - script: |
+          set -eux
           pip install --disable-pip-version-check -r requirements.txt
           pip install --disable-pip-version-check -e .
         displayName: Install package
@@ -251,6 +253,7 @@ stages:
           versionSpec: 3.9
 
       - script: |
+          set -eux
           pip install --disable-pip-version-check -r requirements.txt
           pip install --disable-pip-version-check -e .
         displayName: Install package
