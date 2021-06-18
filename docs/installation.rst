@@ -58,7 +58,7 @@ adding the ``dials_data`` fixture to your test, ie:
 .. code-block:: python
 
     def test_accessing_a_dataset(dials_data):
-        location = dials_data("x4wide")
+        location = dials_data("x4wide", pathlib=True)
 
 The fixture/variable ``dials_data`` in the test is a
 ``dials_data.download.DataFetcher`` instance, which can be called with
@@ -67,15 +67,19 @@ files are not present on the machine then they will be downloaded.
 If either the download fails or ``--regression`` is not specified then
 the test is skipped.
 
-The return value (``location``) is a ``py.path.local`` object pointing
+The return value (``location``) is a ``pathlib.Path`` object pointing
 to the directory containing the requested dataset.
 
-To get a python ``pathlib.Path`` object instead you can call:
+To get a python ``py.path.local`` object instead you can call:
 
 .. code-block:: python
 
     def test_accessing_a_dataset(dials_data):
-        location = dials_data("x4wide", pathlib=True)
+        location = dials_data("x4wide", pathlib=False)
+
+However, please note that the ``py.path`` support is deprecated, and
+will be removed at some point in the future. Currently, if you do not
+specify the ``pathlib=`` argument a ``py.path`` object is returned.
 
 You can see a list of all available datasets by running::
 

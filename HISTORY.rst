@@ -2,6 +2,18 @@
 History
 =======
 
+2.2 (2021-06-18)
+^^^^^^^^^^^^^^^^
+
+* Deprecate the use of ``py.path`` as test fixture return type.
+  You can either silence the warning by specifying ``dials_data("dataset", pathlib=False)``
+  or move to the new ``pathlib.Path`` return objects by setting ``pathlib=True``.
+  This deprecation is planned to be in place for a considerable amount of time.
+  In the next major release (3.0) the default return type will become ``pathlib.Path``,
+  with ``py.path`` still available if ``pathlib=False`` is specified. At this point
+  the ``pathlib=`` argument will be deprecated.
+  In the following minor release (3.1) all support for ``py.path`` will be dropped.
+
 2.1 (2020-06-11)
 ^^^^^^^^^^^^^^^^
 

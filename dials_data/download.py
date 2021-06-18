@@ -2,6 +2,7 @@ import contextlib
 import errno
 import os
 import tarfile
+import warnings
 from pathlib import Path
 from urllib.request import urlopen
 from urllib.parse import urlparse
@@ -278,16 +279,15 @@ class DataFetcher:
         """
         if test_data not in self._cache:
             self._cache[test_data] = self._attempt_fetch(test_data, **kwargs)
-        # TODO: Enable deprecation warning here and in the related test
-        # if pathlib is None:
-        #    warnings.warn(
-        #        "The DataFetcher currently returns py.path.local() objects. "
-        #        "This will in the future change to pathlib.Path() objects. "
-        #        "You can either add a pathlib=True argument to obtain a pathlib.Path() object, "
-        #        "or pathlib=False to silence this warning for now.",
-        #        DeprecationWarning,
-        #        stacklevel=2,
-        #    )
+        if pathlib is None:
+            warnings.warn(
+                "The DataFetcher currently returns py.path.local() objects. "
+                "This will in the future change to pathlib.Path() objects. "
+                "You can either add a pathlib=True argument to obtain a pathlib.Path() object, "
+                "or pathlib=False to silence this warning for now.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
         if pathlib and self._cache[test_data]["result"]:
             result = {
                 **self._cache[test_data],

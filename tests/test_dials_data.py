@@ -4,6 +4,7 @@ import dials_data.download
 import pathlib
 from unittest import mock
 import py
+import pytest
 
 
 def test_all_datasets_can_be_parsed():
@@ -35,9 +36,8 @@ def test_datafetcher_constructs_py_path(fetcher, root):
     fetcher.return_value = True
 
     df = dials_data.download.DataFetcher(read_only=True)
-    # TODO: Enable deprecation warning test here
-    # with pytest.warns(DeprecationWarning):
-    ds = df("dataset")
+    with pytest.warns(DeprecationWarning):
+        ds = df("dataset")
     assert ds == py.path.local("/tmp/root/dataset")
     assert isinstance(ds, py.path.local)
     fetcher.assert_called_once_with(
