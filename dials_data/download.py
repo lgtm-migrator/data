@@ -3,6 +3,7 @@ import errno
 import os
 import tarfile
 import warnings
+import zipfile
 from pathlib import Path
 from urllib.request import urlopen
 from urllib.parse import urlparse
@@ -213,18 +214,26 @@ def _fetch_filelist(filelist, file_hash):
                 (target_dir / f).check(file=1) for f in source["files"]
             ):
                 # If the file has been (re)downloaded, or we don't have all the requested
-                # files from the archive, then we need to decompress the tar archive
+                # files from the archive, then we need to decompress the archive
                 print("Decompressing {file}".format(file=source["file"]))
-                with tarfile.open(source["file"].strpath) as tar:
-                    for f in source["files"]:
+                if source["file"].ext == ".zip":
+                    with zipfile.ZipFile(source["file"].strpath) as zf:
                         try:
-                            tar.extract(f, path=source["file"].dirname)
+                            for f in source["files"]:
+                                zf.extract(f, path=source["file"].dirname)
                         except KeyError:
                             print(
-                                "Expected file {file} not present in tar archive {tarfile}".format(
-                                    file=f, tarfile=source["file"]
-                                )
+                                f"Expected file {f} not present in zip archive {source['file']}"
                             )
+                else:
+                    with tarfile.open(source["file"].strpath) as tar:
+                        for f in source["files"]:
+                            try:
+                                tar.extract(f, path=source["file"].dirname)
+                            except KeyError:
+                                print(
+                                    f"Expected file {f} not present in tar archive {source['file']}"
+                                )
 
 
 class DataFetcher:
