@@ -8,6 +8,7 @@ description: >
 
 data:
   - url: https://github.com/dials/data-files/raw/1916a8649e9f505199949f90822165d368c93872/image_examples/DLS_I03_smargon_0001.cbf.gz
+  - url: https://github.com/dials/data-files/raw/cea064cbde15acd1b558d9c231b7e46d86b6f102/image_examples/DLS_I23_P12M_thau_00001.cbf.gz
   - url: https://github.com/dials/data-files/raw/1916a8649e9f505199949f90822165d368c93872/image_examples/SACLA-MPCCD-Phase3-21528-5images.h5
   - url: https://github.com/dials/data-files/raw/1916a8649e9f505199949f90822165d368c93872/image_examples/TIMEPIX_SU_512-stdgoni_0001.img
   - url: https://github.com/dials/data-files/raw/1916a8649e9f505199949f90822165d368c93872/image_examples/TIMEPIX_SU_516-stdgoni_0001.img
