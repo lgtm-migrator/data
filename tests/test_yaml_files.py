@@ -1,7 +1,8 @@
 import collections
+import string
+
 import importlib_resources
 import pytest
-import string
 import yaml
 
 definition_yamls = collections.OrderedDict(

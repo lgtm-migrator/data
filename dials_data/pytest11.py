@@ -4,6 +4,7 @@ pytest plugin functions
 
 
 import pytest
+
 from .download import DataFetcher
 
 

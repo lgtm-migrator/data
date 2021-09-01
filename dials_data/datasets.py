@@ -1,10 +1,11 @@
 """Module providing access to all known dataset definitions."""
 
 import hashlib
-import importlib_resources
 import os
-import py
 import textwrap
+
+import importlib_resources
+import py
 import yaml
 
 _hashinfo_formatversion = 1

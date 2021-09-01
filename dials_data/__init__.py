@@ -3,7 +3,7 @@ DIALS Regression Data Manager
 https://github.com/dials/data
 """
 
-__all__ = []
+__all__: list = []
 __author__ = """Markus Gerstel"""
 __email__ = "dials-support@lists.sourceforge.net"
 __version__ = "2.2.0"

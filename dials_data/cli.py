@@ -1,10 +1,11 @@
 import argparse
 import sys
 
+import yaml
+
 import dials_data
 import dials_data.datasets
 import dials_data.download
-import yaml
 
 
 def cli_info(cmd_args):
@@ -32,13 +33,11 @@ def cli_info(cmd_args):
             print("{}={}".format(k, information[k]))
     else:
         print(
-            """
-DIALS regression data manager v{information[version.full]}
+            f"""
+DIALS regression data manager v{information['version.full']}
 
-repository location: {information[repository.location]}
-""".format(
-                information=information
-            ).strip()
+repository location: {information['repository.location']}
+""".strip()
         )
 
 

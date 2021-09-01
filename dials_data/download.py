@@ -5,15 +5,47 @@ import tarfile
 import warnings
 import zipfile
 from pathlib import Path
-from urllib.request import urlopen
 from urllib.parse import urlparse
+from urllib.request import urlopen
+
 import dials_data.datasets
 
-fcntl, msvcrt = None, None
 if os.name == "posix":
     import fcntl
+
+    def _platform_lock(file_handle):
+        fcntl.lockf(file_handle, fcntl.LOCK_EX)
+
+    def _platform_unlock(file_handle):
+        fcntl.lockf(file_handle, fcntl.LOCK_UN)
+
+
 elif os.name == "nt":
     import msvcrt
+
+    def _platform_lock(file_handle):
+        file_handle.seek(0)
+        while True:
+            try:
+                msvcrt.locking(file_handle.fileno(), msvcrt.LK_LOCK, 1)
+                # Call will only block for 10 sec and then raise
+                # OSError: [Errno 36] Resource deadlock avoided
+                break  # lock obtained
+            except OSError as e:
+                if e.errno != errno.EDEADLK:
+                    raise
+
+    def _platform_unlock(file_handle):
+        file_handle.seek(0)
+        msvcrt.locking(file_handle.fileno(), msvcrt.LK_UNLCK, 1)
+
+
+else:
+
+    def _platform_lock(file_handle):
+        raise NotImplementedError("File locking not supported on this platform")
+
+    _platform_unlock = _platform_lock
 
 
 @contextlib.contextmanager
@@ -26,32 +58,14 @@ def _file_lock(file_handle):
       with _file_lock(fh):
         (..)
     """
-    if not fcntl and not msvcrt:
-        raise NotImplementedError("File locking not supported on this platform")
     lock = False
     try:
-        if fcntl:
-            fcntl.lockf(file_handle, fcntl.LOCK_EX)
-        else:
-            file_handle.seek(0)
-            while True:
-                try:
-                    msvcrt.locking(file_handle.fileno(), msvcrt.LK_LOCK, 1)
-                    # Call will only block for 10 sec and then raise
-                    # OSError: [Errno 36] Resource deadlock avoided
-                    break  # lock obtained
-                except OSError as e:
-                    if e.errno != errno.EDEADLK:
-                        raise
+        _platform_lock(file_handle)
         lock = True
         yield
     finally:
         if lock:
-            if fcntl:
-                fcntl.lockf(file_handle, fcntl.LOCK_UN)
-            else:
-                file_handle.seek(0)
-                msvcrt.locking(file_handle.fileno(), msvcrt.LK_UNLCK, 1)
+            _platform_unlock(file_handle)
 
 
 @contextlib.contextmanager
@@ -109,20 +123,20 @@ def fetch_dataset(
     download_lockdir=None,
 ):
     """Check for the presence or integrity of the local copy of the specified
-       test dataset. If the dataset is not available or out of date then attempt
-       to download/update it transparently.
+    test dataset. If the dataset is not available or out of date then attempt
+    to download/update it transparently.
 
-       :param verbose:          Show everything as it happens.
-       :param pre_scan:         If all files are present and all file sizes match
-                                then skip file integrity check and exit quicker.
-       :param read_only:        Only use existing data, never download anything.
-                                Implies pre_scan=True.
-       :returns:                False if the dataset can not be downloaded/updated
-                                for any reason.
-                                True if the dataset is present and passes a
-                                cursory inspection.
-                                A validation dictionary if the dataset is present
-                                and was fully verified.
+    :param verbose:          Show everything as it happens.
+    :param pre_scan:         If all files are present and all file sizes match
+                             then skip file integrity check and exit quicker.
+    :param read_only:        Only use existing data, never download anything.
+                             Implies pre_scan=True.
+    :returns:                False if the dataset can not be downloaded/updated
+                             for any reason.
+                             True if the dataset is present and passes a
+                             cursory inspection.
+                             A validation dictionary if the dataset is present
+                             and was fully verified.
     """
     if dataset not in dials_data.datasets.definition:
         return False
@@ -239,17 +253,17 @@ def _fetch_filelist(filelist, file_hash):
 class DataFetcher:
     """A class that offers access to regression datasets.
 
-       To initialize:
-           df = DataFetcher()
-       Then
-           df('insulin')
-       returns a py.path object to the insulin data. If that data is not already
-       on disk it is downloaded automatically.
+    To initialize:
+        df = DataFetcher()
+    Then
+        df('insulin')
+    returns a py.path object to the insulin data. If that data is not already
+    on disk it is downloaded automatically.
 
-       To disable all downloads:
-           df = DataFetcher(read_only=True)
+    To disable all downloads:
+        df = DataFetcher(read_only=True)
 
-       Do not use this class directly in tests! Use the dials_data fixture.
+    Do not use this class directly in tests! Use the dials_data fixture.
     """
 
     def __init__(self, read_only=False):
@@ -259,7 +273,8 @@ class DataFetcher:
 
     def __repr__(self):
         return "<{}DataFetcher: {}>".format(
-            "R/O " if self._read_only else "", self._target_dir.strpath,
+            "R/O " if self._read_only else "",
+            self._target_dir.strpath,
         )
 
     def result_filter(self, result, **kwargs):
