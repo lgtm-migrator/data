@@ -1,5 +1,5 @@
 collective.checkdocs==0.2
-coverage==6.1.2
+coverage==6.2
 importlib_resources==5.4.0
 py==1.11.0
 pytest==6.2.5
