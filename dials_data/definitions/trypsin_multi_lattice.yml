@@ -5,13 +5,14 @@ url: https://doi.org/10.5281/zenodo.5569344
 description: >
   A diffraction dataset derived from the "acegik" set from
   https://doi.org/10.5281/zenodo.10820. Images have been merged in
-  groups of four and compressed. The resulting dataset consists  of 25
+  groups of four and compressed. The resulting dataset consists of 25
   images covering 10° rotation, with diffraction from six separate
   lattices, with numerous overlapping spots. This dataset may be
   used for testing overlap handling of integration software. Alongside
   the diffraction images, refined.expt and refined.refl files are
   provided containing information about the experimental geometry and
   the located spot data.
+
 data:
   - url: https://zenodo.org/record/5569344/files/refined.expt
   - url: https://zenodo.org/record/5569344/files/refined.refl

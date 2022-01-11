@@ -6,6 +6,8 @@ History
 ^^^^^^^^^^^^^^^^
 
 * Drop Python 3.6 compatibility
+* Dataset `SSX_CuNiR_processed` has been renamed to `cunir_serial_processed` for consistency
+  with `cunir_serial`
 
 2.2 (2021-06-18)
 ^^^^^^^^^^^^^^^^
