@@ -1,5 +1,7 @@
 """Module providing access to all known dataset definitions."""
 
+from __future__ import annotations
+
 import hashlib
 import os
 import textwrap
