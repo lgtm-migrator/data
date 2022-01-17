@@ -30,6 +30,12 @@ stages:
           python .azure-pipelines/flake8-validation.py
         displayName: Flake8 validation
 
+      - bash: |
+          set -eux
+          pip install --disable-pip-version-check mypy==0.910 types-PyYAML==5.4.9  # Pin to versions in corresponding pre-commit hook.
+          mypy --no-strict-optional dials_data/
+        displayName: Type checking
+
       # Set up constants for further build steps
       - bash: |
           echo "##vso[task.setvariable variable=BUILD_REPOSITORY_NAME;isOutput=true]${BUILD_REPOSITORY_NAME}"

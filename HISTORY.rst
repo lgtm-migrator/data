@@ -2,6 +2,10 @@
 History
 =======
 
+2.4 (????-??-??)
+^^^^^^^^^^^^^^^^
+* The CI for dials_data now includes type checking with Mypy.
+
 2.3 (2022-01-11)
 ^^^^^^^^^^^^^^^^
 
