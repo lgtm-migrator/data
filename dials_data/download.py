@@ -2,13 +2,17 @@ from __future__ import annotations
 
 import contextlib
 import errno
+import hashlib
 import os
 import tarfile
 import warnings
 import zipfile
 from pathlib import Path
+from typing import Any, Optional, Union
 from urllib.parse import urlparse
 from urllib.request import urlopen
+
+import py.path
 
 import dials_data.datasets
 
@@ -71,18 +75,19 @@ def _file_lock(file_handle):
 
 
 @contextlib.contextmanager
-def download_lock(target_dir):
+def download_lock(target_dir: Path):
     """
     Obtains a (cooperative) lock on a lockfile in a target directory, so only a
     single (cooperative) process can enter this context manager at any one time.
     If the lock is held this will block until the existing lock is released.
     """
-    with target_dir.join(".lock").open(mode="w", ensure=True) as fh:
+    target_dir.mkdir(parents=True, exist_ok=True)
+    with target_dir.joinpath(".lock").open(mode="w") as fh:
         with _file_lock(fh):
             yield
 
 
-def _download_to_file(url, pyfile):
+def _download_to_file(url, pyfile: Path):
     """
     Downloads a single URL to a file.
     """
@@ -94,7 +99,8 @@ def _download_to_file(url, pyfile):
         received = 0
         block_size = 8192
         # Allow for writing the file immediately so we can empty the buffer
-        with pyfile.open(mode="wb", ensure=True) as f:
+        pyfile.parent.mkdir(parents=True, exist_ok=True)
+        with pyfile.open(mode="wb") as f:
             while True:
                 block = socket.read(block_size)
                 received += len(block)
@@ -104,26 +110,28 @@ def _download_to_file(url, pyfile):
 
     if file_size and file_size != received:
         raise OSError(
-            "Error downloading {url}: received {received} bytes instead of expected {file_size} bytes".format(
-                file_size=file_size, received=received, url=url
-            )
+            f"Error downloading {url}: received {received} bytes instead of expected {file_size} bytes"
         )
 
 
-def file_hash(path):
+def file_hash(file_to_hash: Path) -> str:
     """Returns the SHA256 digest of a file."""
-    return path.computehash(hashtype="sha256")
+    sha256_hash = hashlib.sha256()
+    with file_to_hash.open("rb") as f:
+        for block in iter(lambda: f.read(4096), b""):
+            sha256_hash.update(block)
+    return sha256_hash.hexdigest()
 
 
 def fetch_dataset(
     dataset,
-    ignore_hashinfo=False,
-    verify=False,
-    read_only=False,
-    verbose=False,
-    pre_scan=True,
-    download_lockdir=None,
-):
+    ignore_hashinfo: bool = False,
+    verify: bool = False,
+    read_only: bool = False,
+    verbose: bool = False,
+    pre_scan: bool = True,
+    download_lockdir: Optional[Path] = None,
+) -> Union[bool, Any]:
     """Check for the presence or integrity of the local copy of the specified
     test dataset. If the dataset is not available or out of date then attempt
     to download/update it transparently.
@@ -144,8 +152,8 @@ def fetch_dataset(
         return False
     definition = dials_data.datasets.definition[dataset]
 
-    target_dir = dials_data.datasets.repository_location().join(dataset)
-    if read_only and not target_dir.check(dir=1):
+    target_dir: Path = dials_data.datasets.repository_location() / dataset
+    if read_only and not target_dir.is_dir():
         return False
 
     integrity_info = definition.get("hashinfo")
@@ -154,10 +162,10 @@ def fetch_dataset(
 
     if "verify" not in integrity_info:
         integrity_info["verify"] = [{} for _ in definition["data"]]
-    filelist = [
+    filelist: list[dict[str, Any]] = [
         {
             "url": source["url"],
-            "file": target_dir.join(os.path.basename(urlparse(source["url"]).path)),
+            "file": target_dir / os.path.basename(urlparse(source["url"]).path),
             "files": source.get("files"),
             "verify": hashinfo,
         }
@@ -166,9 +174,9 @@ def fetch_dataset(
 
     if pre_scan or read_only:
         if all(
-            item["file"].check()
+            item["file"].is_file()
             and item["verify"].get("size")
-            and item["verify"]["size"] == item["file"].size()
+            and item["verify"]["size"] == item["file"].stat().st_size
             for item in filelist
         ):
             return True
@@ -185,33 +193,29 @@ def fetch_dataset(
     return integrity_info
 
 
-def _fetch_filelist(filelist, file_hash):
+def _fetch_filelist(filelist: list[dict[str, Any]], file_hash) -> None:
     for source in filelist:  # parallelize this
         if source.get("type", "file") == "file":
             valid = False
-            if source["file"].check(file=1):
+            if source["file"].is_file():
                 # verify
                 valid = True
                 if source["verify"]:
-                    if source["verify"]["size"] != source["file"].size():
+                    if source["verify"]["size"] != source["file"].stat().st_size:
                         valid = False
-                        print("size")
                     elif source["verify"]["hash"] != file_hash(source["file"]):
                         valid = False
-                        print(
-                            "hash", source["verify"]["hash"], file_hash(source["file"])
-                        )
 
             downloaded = False
             if not valid:
-                print("Downloading {}".format(source["url"]))
+                print(f"Downloading {source['url']}")
                 _download_to_file(source["url"], source["file"])
                 downloaded = True
 
             # verify
             valid = True
             fileinfo = {
-                "size": source["file"].size(),
+                "size": source["file"].stat().st_size,
                 "hash": file_hash(source["file"]),
             }
             if source["verify"]:
@@ -225,27 +229,27 @@ def _fetch_filelist(filelist, file_hash):
 
         # If the file is a tar archive, then decompress
         if source["files"]:
-            target_dir = source["file"].dirpath()
+            target_dir = source["file"].parent
             if downloaded or not all(
-                (target_dir / f).check(file=1) for f in source["files"]
+                (target_dir / f).is_fire() for f in source["files"]
             ):
                 # If the file has been (re)downloaded, or we don't have all the requested
                 # files from the archive, then we need to decompress the archive
-                print("Decompressing {file}".format(file=source["file"]))
-                if source["file"].ext == ".zip":
-                    with zipfile.ZipFile(source["file"].strpath) as zf:
+                print(f"Decompressing {source['file']}")
+                if source["file"].suffix == ".zip":
+                    with zipfile.ZipFile(source["file"]) as zf:
                         try:
                             for f in source["files"]:
-                                zf.extract(f, path=source["file"].dirname)
+                                zf.extract(f, path=source["file"].parent)
                         except KeyError:
                             print(
                                 f"Expected file {f} not present in zip archive {source['file']}"
                             )
                 else:
-                    with tarfile.open(source["file"].strpath) as tar:
+                    with tarfile.open(source["file"]) as tar:
                         for f in source["files"]:
                             try:
-                                tar.extract(f, path=source["file"].dirname)
+                                tar.extract(f, path=source["file"].parent)
                             except KeyError:
                                 print(
                                     f"Expected file {f} not present in tar archive {source['file']}"
@@ -259,7 +263,7 @@ class DataFetcher:
         df = DataFetcher()
     Then
         df('insulin')
-    returns a py.path object to the insulin data. If that data is not already
+    returns a Path object to the insulin data. If that data is not already
     on disk it is downloaded automatically.
 
     To disable all downloads:
@@ -269,14 +273,14 @@ class DataFetcher:
     """
 
     def __init__(self, read_only=False):
-        self._cache = {}
-        self._target_dir = dials_data.datasets.repository_location()
-        self._read_only = read_only and os.access(self._target_dir.strpath, os.W_OK)
+        self._cache: dict[str, Optional[Path]] = {}
+        self._target_dir: Path = dials_data.datasets.repository_location()
+        self._read_only: bool = read_only and os.access(self._target_dir, os.W_OK)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "<{}DataFetcher: {}>".format(
             "R/O " if self._read_only else "",
-            self._target_dir.strpath,
+            self._target_dir,
         )
 
     def result_filter(self, result, **kwargs):
@@ -288,7 +292,7 @@ class DataFetcher:
         """
         return result
 
-    def __call__(self, test_data, pathlib=None, **kwargs):
+    def __call__(self, test_data: str, pathlib=None, **kwargs):
         """
         Return the location of a dataset, transparently downloading it if
         necessary and possible.
@@ -304,7 +308,7 @@ class DataFetcher:
                  if the dataset is not available.
         """
         if test_data not in self._cache:
-            self._cache[test_data] = self._attempt_fetch(test_data, **kwargs)
+            self._cache[test_data] = self._attempt_fetch(test_data)
         if pathlib is None:
             warnings.warn(
                 "The DataFetcher currently returns py.path.local() objects. "
@@ -314,15 +318,13 @@ class DataFetcher:
                 DeprecationWarning,
                 stacklevel=2,
             )
-        if pathlib and self._cache[test_data]["result"]:
-            result = {
-                **self._cache[test_data],
-                "result": Path(self._cache[test_data]["result"]),
-            }
-            return self.result_filter(**result)
-        return self.result_filter(**self._cache[test_data])
+        if not self._cache[test_data]:
+            return self.result_filter(result=False)
+        elif not pathlib:
+            return self.result_filter(result=py.path.local(self._cache[test_data]))
+        return self.result_filter(result=self._cache[test_data])
 
-    def _attempt_fetch(self, test_data):
+    def _attempt_fetch(self, test_data: str) -> Optional[Path]:
         if self._read_only:
             data_available = fetch_dataset(test_data, pre_scan=True, read_only=True)
         else:
@@ -333,6 +335,6 @@ class DataFetcher:
                 download_lockdir=self._target_dir,
             )
         if data_available:
-            return {"result": self._target_dir.join(test_data)}
+            return self._target_dir / test_data
         else:
-            return {"result": False}
+            return None

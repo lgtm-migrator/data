@@ -4,7 +4,9 @@ History
 
 2.4 (????-??-??)
 ^^^^^^^^^^^^^^^^
-* The CI for dials_data now includes type checking with Mypy.
+
+* dials_data no longer uses ``py.path`` internally.
+* dials_data now includes type checking with mypy.
 
 2.3 (2022-01-11)
 ^^^^^^^^^^^^^^^^

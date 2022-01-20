@@ -5,15 +5,19 @@ from __future__ import annotations
 import hashlib
 import os
 import textwrap
+from pathlib import Path
+from typing import Any
 
 import importlib_resources
-import py
 import yaml
 
 _hashinfo_formatversion = 1
 
+definition: dict[str, Any]
+fileinfo_dirty: set[str]
 
-def _load_yml_definitions():
+
+def _load_yml_definitions() -> None:
     """
     Read dataset .yml files from definitions/ and hashinfo/ directories.
     This is done once during the module import stage.
@@ -48,7 +52,7 @@ def _load_yml_definitions():
 _load_yml_definitions()
 
 
-def create_integrity_record(dataset_name):
+def create_integrity_record(dataset_name) -> dict[str, Any]:
     """
     Generate a dictionary for the integrity information of a specific dataset.
     """
@@ -58,7 +62,7 @@ def create_integrity_record(dataset_name):
     }
 
 
-def repository_location():
+def repository_location() -> Path:
     """
     Returns an appropriate location where the downloaded regression data should
     be stored.
@@ -75,53 +79,51 @@ def repository_location():
     """
     if os.getenv("DIALS_DATA"):
         try:
-            repository = py.path.local(os.getenv("DIALS_DATA"))
-            repository.ensure(dir=1)
+            repository = Path(os.environ["DIALS_DATA"])
+            repository.mkdir(parents=True, exist_ok=True)
             return repository
-        except Exception:
+        except (KeyError, TypeError, OSError):
             pass
     try:
-        repository = py.path.local("/dls/science/groups/scisoft/DIALS/dials_data")
-        if repository.check(dir=1):
+        repository = Path("/dls/science/groups/scisoft/DIALS/dials_data")
+        if repository.is_dir():
             return repository
-    except Exception:
+    except OSError:
         pass
     if os.getenv("LIBTBX_BUILD"):
         try:
-            repository = py.path.local(os.getenv("LIBTBX_BUILD")).join("dials_data")
-            repository.ensure(dir=1)
+            repository = Path(os.environ["LIBTBX_BUILD"]) / "dials_data"
+            repository.mkdir(parents=True, exist_ok=True)
             return repository
-        except Exception:
+        except (KeyError, TypeError, OSError):
             pass
-    repository = (
-        py.path.local(os.path.expanduser("~")).join(".cache").join("dials_data")
-    )
     try:
-        repository.ensure(dir=1)
+        repository = Path.home() / ".cache" / "dials_data"
+        repository.mkdir(parents=True, exist_ok=True)
         return repository
-    except Exception:
+    except (TypeError, OSError):
         raise RuntimeError(
             "Could not determine regression data location. Use environment variable DIALS_DATA"
         )
 
 
-def get_resident_size(ds):
+def get_resident_size(ds) -> int:
     if ds in fileinfo_dirty:
         return 0
     return sum(item["size"] for item in definition[ds]["hashinfo"]["verify"])
 
 
-def _human_readable(num, suffix="B"):
+def _human_readable(num: float, suffix: str = "B") -> str:
     for unit in ("", "k", "M", "G"):
         if num < 10:
             return f"{num:.1f}{unit}{suffix}"
         if num < 1024:
             return f"{num:.0f}{unit}{suffix}"
         num /= 1024.0
-    return "{:.0f}{}{}".format(num, "T", suffix)
+    return f"{num:.0f}T{suffix}"
 
 
-def list_known_definitions(ds_list, quiet=False):
+def list_known_definitions(ds_list, quiet=False) -> None:
     indent = " " * 4
     for shortname in sorted(ds_list):
         if quiet:

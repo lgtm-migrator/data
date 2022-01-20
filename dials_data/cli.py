@@ -5,7 +5,6 @@ import sys
 
 import yaml
 
-import dials_data
 import dials_data.datasets
 import dials_data.download
 
@@ -72,7 +71,7 @@ def cli_get(cmd_args):
 
     repository = dials_data.datasets.repository_location()
     if not args.quiet:
-        print(f"Repository location: {repository.strpath}\n")
+        print(f"Repository location: {repository}\n")
 
     for ds in args.dataset:
         if not args.quiet:
@@ -86,9 +85,9 @@ def cli_get(cmd_args):
             with open(f"{ds}.yml", "w") as fh:
                 yaml.dump(hashinfo, fh, default_flow_style=False)
         if args.quiet:
-            print(repository.join(ds).strpath)
+            print(repository / ds)
         else:
-            print(f"Dataset {ds} stored in {repository.join(ds).strpath}")
+            print(f"Dataset {ds} stored in {repository.joinpath(ds)}")
 
 
 def cli_list(cmd_args):
