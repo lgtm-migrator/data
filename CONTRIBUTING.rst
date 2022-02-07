@@ -70,14 +70,11 @@ Ready to contribute? Here's how to set up `dials_data` for local development.
 
    Now you can make your changes locally.
 
-5. When you're done making changes, check that your changes pass flake8 and the
-   tests, including testing other Python versions with tox::
+5. Before committing changes to the repository you should install pre-commit::
 
-    $ flake8 dials_data tests
-    $ python setup.py test or py.test
-    $ tox
+    $ pre-commit install
 
-   To get flake8 and tox, just pip install them into your virtualenv.
+   If you do not have pre-commit set up, you can install it with pip.
 
 6. Commit your changes and push your branch to GitHub::
 
@@ -92,15 +89,12 @@ Pull Request Guidelines
 
 Before you submit a pull request, check that it meets these guidelines:
 
-1. The pull request should include tests, unless you are adding or updating
-   a dataset.
+1. Unless you are only touching datasets the pull request should include tests.
 2. If you add or update a dataset then make individual pull requests for each
    dataset, so that they can be discussed and approved separately.
 3. If the pull request adds functionality, the docs should be updated. Put
    your new functionality into a function with a docstring, and add the
    feature to the list in HISTORY.rst.
-4. The pull request should work for all supported Python versions. Check
-   https://travis-ci.com/dials/data/pull_requests
 
 
 Deploying
