@@ -2,7 +2,9 @@ name: Aluminium standard
 author: Elena Pascal (2021)
 license: CC-BY 4.0
 description: > 
-  Data collected by Yun Song at DLS on eBIC's Talos Arctica (m12). The sample is a policrystalline aluminium standard. Full dataset is here: /dls/ebic/data/staff-scratch/YunSong/Yun_cameralength_cal/cameralength_cal.
+  Original data collected by Yun Song at DLS on eBIC's Talos Arctica (m12). The sample is a polycrystalline aluminium standard. Full dataset is here: /dls/ebic/data/staff-scratch/YunSong/Yun_cameralength_cal/cameralength_cal.
+
+  Starting geometry was generated with dials.powder_calibrate_widget
 
   Used for powder geometry calibration testing.
 
