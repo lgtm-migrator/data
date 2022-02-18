@@ -10,11 +10,18 @@ description: >
 
   eyeballed.expt was generated with dials.powder_calibrate_widget
 
-
+  calibrated.expt was generated with
+    starting_file = "eyeballed.expt"
+    test_args = [starting_file, "standard=Al", "eyeball=False"]
+    expt_parameters, user_arguments = parse_args(args=test_args)
+    calibrator = PowderCalibrator(expt_params=expt_parameters, user_args=user_arguments)
+    calibrator.calibrate_with_calibrant(verbose=True)
+  
   Used for powder geometry calibration testing.
 
 data:
 
-  - url: https://github.com/dials/data-files/raw/b36381f2548a889474d0e30425a625fa976ba3a6/aluminium_standard/0p67_5s_0000.mrc
-  - url: https://raw.githubusercontent.com/dials/data-files/b36381f2548a889474d0e30425a625fa976ba3a6/aluminium_standard/imported.expt
-  - url: https://raw.githubusercontent.com/dials/data-files/b36381f2548a889474d0e30425a625fa976ba3a6/aluminium_standard/eyeballed.expt
+  - url: https://raw.githubusercontent.com/dials/data-files/35addc5660df90b3b9579bc932e95a9aa01389fe/aluminium_standard/0p67_5s_0000.mrc
+  - url: https://raw.githubusercontent.com/dials/data-files/35addc5660df90b3b9579bc932e95a9aa01389fe/aluminium_standard/imported.expt
+  - url: https://raw.githubusercontent.com/dials/data-files/35addc5660df90b3b9579bc932e95a9aa01389fe/aluminium_standard/eyeballed.expt
+  - url: https://raw.githubusercontent.com/dials/data-files/35addc5660df90b3b9579bc932e95a9aa01389fe/aluminium_standard/calibrated.expt
