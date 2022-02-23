@@ -33,7 +33,7 @@ more files are added. This quickly becomes impractical in distributed
 testing environments. The disk space required for checkouts can be
 reduced by compressing the data, but then they need to be unpacked for
 using the data in tests. By its nature the internal SVN repository was
-not publically accessible. The data files were too large to convert the
+not publicly accessible. The data files were too large to convert the
 repository to a git repository to be hosted on Github, and in any case
 a git repository was not the best place either to store large amounts
 of data, as old versions of the data or retired datasets are kept
@@ -48,7 +48,7 @@ first.
 With dxtbx_, dials_ and xia2_ moving to pytest_ we extended the
 xia2_regression_ concept into the regression_data_ fixture to provide
 a simple way to access the datasets in tests, but the data still
-needed downloading separately and coult not easily be used outside
+needed downloading separately and could not easily be used outside
 of the dials_ repository and not at all outside of a dials_
 distribution. Adding data files was still a very involved process.
 

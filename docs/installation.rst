@@ -26,11 +26,11 @@ Both are valid opinions.
 
 However you do not need to install ``dials_data`` from source. You can simply run::
 
-    pip install -U dials_data
+    pip install -U dials-data
 
 or, in a conda environment::
 
-    conda install -c conda-forge dials_data
+    conda install -c conda-forge dials-data
 
 This will install or update an existing installation of ``dials_data``.
 
