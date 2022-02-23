@@ -26,13 +26,14 @@ stages:
 
       - bash: |
           set -eux
-          pip install --disable-pip-version-check flake8
+          pip install --disable-pip-version-check flake8 flake8-comprehensions
           python .azure-pipelines/flake8-validation.py
         displayName: Flake8 validation
 
       - bash: |
           set -eux
-          pip install --disable-pip-version-check mypy==0.910 types-PyYAML==5.4.9  # Pin to versions in corresponding pre-commit hook.
+          # install versions matching the ones in the corresponding pre-commit hook
+          pip install --disable-pip-version-check mypy==0.931 types-PyYAML==6.0.4 types-requests==2.27.11
           mypy --no-strict-optional dials_data/
         displayName: Type checking
 

@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import concurrent.futures
 import contextlib
 import errno
+import functools
 import hashlib
 import os
 import tarfile
@@ -10,9 +12,9 @@ import zipfile
 from pathlib import Path
 from typing import Any, Optional, Union
 from urllib.parse import urlparse
-from urllib.request import urlopen
 
 import py.path
+import requests
 
 import dials_data.datasets
 
@@ -24,7 +26,6 @@ if os.name == "posix":
 
     def _platform_unlock(file_handle):
         fcntl.lockf(file_handle, fcntl.LOCK_UN)
-
 
 elif os.name == "nt":
     import msvcrt
@@ -44,7 +45,6 @@ elif os.name == "nt":
     def _platform_unlock(file_handle):
         file_handle.seek(0)
         msvcrt.locking(file_handle.fileno(), msvcrt.LK_UNLCK, 1)
-
 
 else:
 
@@ -75,43 +75,31 @@ def _file_lock(file_handle):
 
 
 @contextlib.contextmanager
-def download_lock(target_dir: Path):
+def download_lock(target_dir: Optional[Path]):
     """
     Obtains a (cooperative) lock on a lockfile in a target directory, so only a
     single (cooperative) process can enter this context manager at any one time.
     If the lock is held this will block until the existing lock is released.
     """
+    if not target_dir:
+        yield
+        return
     target_dir.mkdir(parents=True, exist_ok=True)
     with target_dir.joinpath(".lock").open(mode="w") as fh:
         with _file_lock(fh):
             yield
 
 
-def _download_to_file(url, pyfile: Path):
+def _download_to_file(session: requests.Session, url: str, pyfile: Path):
     """
     Downloads a single URL to a file.
     """
-    with contextlib.closing(urlopen(url)) as socket:
-        file_size = socket.info().get("Content-Length")
-        if file_size:
-            file_size = int(file_size)
-        # There is no guarantee that the content-length header is set
-        received = 0
-        block_size = 8192
-        # Allow for writing the file immediately so we can empty the buffer
+    with session.get(url, stream=True) as r:
+        r.raise_for_status()
         pyfile.parent.mkdir(parents=True, exist_ok=True)
         with pyfile.open(mode="wb") as f:
-            while True:
-                block = socket.read(block_size)
-                received += len(block)
-                f.write(block)
-                if not block:
-                    break
-
-    if file_size and file_size != received:
-        raise OSError(
-            f"Error downloading {url}: received {received} bytes instead of expected {file_size} bytes"
-        )
+            for chunk in r.iter_content(chunk_size=40960):
+                f.write(chunk)
 
 
 def file_hash(file_to_hash: Path) -> str:
@@ -183,77 +171,77 @@ def fetch_dataset(
         if read_only:
             return False
 
-    if download_lockdir:
-        # Acquire lock if required as files may be downloaded/written.
-        with download_lock(download_lockdir):
-            _fetch_filelist(filelist, file_hash)
-    else:
-        _fetch_filelist(filelist, file_hash)
+    # Acquire lock if required as files may be downloaded/written.
+    with download_lock(download_lockdir):
+        _fetch_filelist(filelist)
 
     return integrity_info
 
 
-def _fetch_filelist(filelist: list[dict[str, Any]], file_hash) -> None:
-    for source in filelist:  # parallelize this
-        if source.get("type", "file") == "file":
-            valid = False
-            if source["file"].is_file():
-                # verify
-                valid = True
-                if source["verify"]:
-                    if source["verify"]["size"] != source["file"].stat().st_size:
-                        valid = False
-                    elif source["verify"]["hash"] != file_hash(source["file"]):
-                        valid = False
+def _fetch_filelist(filelist: list[dict[str, Any]]) -> None:
+    with requests.Session() as rs:
+        pool = concurrent.futures.ThreadPoolExecutor(max_workers=5)
+        pool.map(functools.partial(_fetch_file, rs), filelist)
 
-            downloaded = False
-            if not valid:
-                print(f"Downloading {source['url']}")
-                _download_to_file(source["url"], source["file"])
-                downloaded = True
 
-            # verify
-            valid = True
-            fileinfo = {
-                "size": source["file"].stat().st_size,
-                "hash": file_hash(source["file"]),
-            }
-            if source["verify"]:
-                if source["verify"]["size"] != fileinfo["size"]:
-                    valid = False
-                elif source["verify"]["hash"] != fileinfo["hash"]:
-                    valid = False
+def _fetch_file(session: requests.Session, source: dict[str, Any]) -> None:
+    valid = False
+    if source["file"].is_file():
+        # verify
+        valid = True
+        if source["verify"]:
+            if source["verify"]["size"] != source["file"].stat().st_size:
+                valid = False
+            elif source["verify"]["hash"] != file_hash(source["file"]):
+                valid = False
+
+    downloaded = False
+    if not valid:
+        print(f"Downloading {source['url']}")
+        _download_to_file(session, source["url"], source["file"])
+        downloaded = True
+
+    # verify
+    valid = True
+    if source["verify"]:
+        if source["verify"]["size"] != source["file"].stat().st_size:
+            print(
+                f"File size mismatch on {source['file']}: "
+                f"{source['file'].stat().st_size}, expected {source['verify']['size']}"
+            )
+        elif source["verify"]["hash"] != file_hash(source["file"]):
+            print(f"File hash mismatch on {source['file']}")
+    else:
+        source["verify"]["size"] = source["file"].stat().st_size
+        source["verify"]["hash"] = file_hash(source["file"])
+
+    # If the file is a tar archive, then decompress
+    if source["files"]:
+        target_dir = source["file"].parent
+        if downloaded or not all((target_dir / f).is_file() for f in source["files"]):
+            # If the file has been (re)downloaded, or we don't have all the requested
+            # files from the archive, then we need to decompress the archive
+            print(f"Decompressing {source['file']}")
+            if source["file"].suffix == ".zip":
+                with zipfile.ZipFile(source["file"]) as zf:
+                    try:
+                        for f in source["files"]:
+                            zf.extract(f, path=source["file"].parent)
+                    except KeyError:
+                        print(
+                            f"Expected file {f} not present "
+                            f"in zip archive {source['file']}"
+                        )
             else:
-                source["verify"]["size"] = fileinfo["size"]
-                source["verify"]["hash"] = fileinfo["hash"]
-
-        # If the file is a tar archive, then decompress
-        if source["files"]:
-            target_dir = source["file"].parent
-            if downloaded or not all(
-                (target_dir / f).is_file() for f in source["files"]
-            ):
-                # If the file has been (re)downloaded, or we don't have all the requested
-                # files from the archive, then we need to decompress the archive
-                print(f"Decompressing {source['file']}")
-                if source["file"].suffix == ".zip":
-                    with zipfile.ZipFile(source["file"]) as zf:
+                with tarfile.open(source["file"]) as tar:
+                    for f in source["files"]:
                         try:
-                            for f in source["files"]:
-                                zf.extract(f, path=source["file"].parent)
+                            tar.extract(f, path=source["file"].parent)
                         except KeyError:
                             print(
-                                f"Expected file {f} not present in zip archive {source['file']}"
+                                f"Expected file {f} not present "
+                                f"in tar archive {source['file']}"
                             )
-                else:
-                    with tarfile.open(source["file"]) as tar:
-                        for f in source["files"]:
-                            try:
-                                tar.extract(f, path=source["file"].parent)
-                            except KeyError:
-                                print(
-                                    f"Expected file {f} not present in tar archive {source['file']}"
-                                )
 
 
 class DataFetcher:

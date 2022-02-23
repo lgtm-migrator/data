@@ -7,6 +7,8 @@ History
 
 * dials_data no longer uses ``py.path`` internally.
 * dials_data now includes type checking with mypy.
+* We started using the ``requests`` library for faster downloads.
+* Downloads now happen in parallel.
 
 2.3 (2022-01-11)
 ^^^^^^^^^^^^^^^^
