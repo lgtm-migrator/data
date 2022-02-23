@@ -231,7 +231,7 @@ def _fetch_filelist(filelist: list[dict[str, Any]], file_hash) -> None:
         if source["files"]:
             target_dir = source["file"].parent
             if downloaded or not all(
-                (target_dir / f).is_fire() for f in source["files"]
+                (target_dir / f).is_file() for f in source["files"]
             ):
                 # If the file has been (re)downloaded, or we don't have all the requested
                 # files from the archive, then we need to decompress the archive
