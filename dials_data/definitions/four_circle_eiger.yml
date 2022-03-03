@@ -27,22 +27,22 @@ description: >
 data:
   - url: https://zenodo.org/record/6093231/files/01_CuHF2pyz2PF6b_Phi.tar.xz
     files:
-      - CuHF2pyz2PF6b_Phi_01_000001.h5
-      - CuHF2pyz2PF6b_Phi_01_000002.h5
-      - CuHF2pyz2PF6b_Phi_01_meta.h5
-      - CuHF2pyz2PF6b_Phi_01.nxs
+      - 01_CuHF2pyz2PF6b_Phi/CuHF2pyz2PF6b_Phi_01_000001.h5
+      - 01_CuHF2pyz2PF6b_Phi/CuHF2pyz2PF6b_Phi_01_000002.h5
+      - 01_CuHF2pyz2PF6b_Phi/CuHF2pyz2PF6b_Phi_01_meta.h5
+      - 01_CuHF2pyz2PF6b_Phi/CuHF2pyz2PF6b_Phi_01.nxs
   - url: https://zenodo.org/record/6093231/files/02_CuHF2pyz2PF6b_2T.tar.xz
     files:
-      - CuHF2pyz2PF6b_2T_01_000001.h5
-      - CuHF2pyz2PF6b_2T_01_000002.h5
-      - CuHF2pyz2PF6b_2T_01_meta.h5
-      - CuHF2pyz2PF6b_2T_01.nxs
+      - 02_CuHF2pyz2PF6b_2T/CuHF2pyz2PF6b_2T_01_000001.h5
+      - 02_CuHF2pyz2PF6b_2T/CuHF2pyz2PF6b_2T_01_000002.h5
+      - 02_CuHF2pyz2PF6b_2T/CuHF2pyz2PF6b_2T_01_meta.h5
+      - 02_CuHF2pyz2PF6b_2T/CuHF2pyz2PF6b_2T_01.nxs
   - url: https://zenodo.org/record/6093231/files/03_CuHF2pyz2PF6b_P_O.tar.xz
     files:
-      - CuHF2pyz2PF6b_P_O_01_000001.h5
-      - CuHF2pyz2PF6b_P_O_01_000002.h5
-      - CuHF2pyz2PF6b_P_O_01_meta.h5
-      - CuHF2pyz2PF6b_P_O_01.nxs
-      - CuHF2pyz2PF6b_P_O_02_000001.h5
-      - CuHF2pyz2PF6b_P_O_02_meta.h5
-      - CuHF2pyz2PF6b_P_O_02.nxs
+      - 03_CuHF2pyz2PF6b_P_O/CuHF2pyz2PF6b_P_O_01_000001.h5
+      - 03_CuHF2pyz2PF6b_P_O/CuHF2pyz2PF6b_P_O_01_000002.h5
+      - 03_CuHF2pyz2PF6b_P_O/CuHF2pyz2PF6b_P_O_01_meta.h5
+      - 03_CuHF2pyz2PF6b_P_O/CuHF2pyz2PF6b_P_O_01.nxs
+      - 03_CuHF2pyz2PF6b_P_O/CuHF2pyz2PF6b_P_O_02_000001.h5
+      - 03_CuHF2pyz2PF6b_P_O/CuHF2pyz2PF6b_P_O_02_meta.h5
+      - 03_CuHF2pyz2PF6b_P_O/CuHF2pyz2PF6b_P_O_02.nxs
