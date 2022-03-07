@@ -2,7 +2,7 @@
 History
 =======
 
-2.4 (????-??-??)
+2.4 (2022-03-07)
 ^^^^^^^^^^^^^^^^
 
 * dials_data no longer uses ``py.path`` internally.
