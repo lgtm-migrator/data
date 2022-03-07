@@ -1,4 +1,4 @@
-name: Data processing results for electron diffraction data recorded from quartz crystals
+name: DIALS output of processing a quartz crystal electron diffraction data set
 author: David Waterman (2022)
 license: CC-BY 4.0
 url: https://github.com/dials/data-files/blob/master/quartz_processed/README.md
