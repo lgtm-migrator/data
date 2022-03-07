@@ -4,7 +4,7 @@ license: CC-BY 4.0
 url: https://github.com/dials/data-files/blob/master/quartz_processed/README.md
 description: >
   Files created by DIALS data processing of quartz electron diffraction
-  data from https://zenodo.org/record/5579793#.Yg5KO3XP1hE. The
+  data from https://zenodo.org/record/5579793. The
   processing script used to produce these files with
   DIALS 3.dev.698-gba04be81f is included for reference. The integrated
   intensities are exported in cif_pets format, allowing absolute
