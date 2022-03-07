@@ -79,6 +79,8 @@ def cli_get(cmd_args):
         hashinfo = dials_data.download.fetch_dataset(
             ds, ignore_hashinfo=args.create_hashinfo, verify=args.verify
         )
+        if not hashinfo:
+            exit(f"Error downloading dataset {ds}")
         if args.create_hashinfo:
             if not args.quiet:
                 print(f"Writing file integrity information to {ds}.yml")

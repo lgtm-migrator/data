@@ -119,16 +119,18 @@ def fetch_dataset(
     verbose: bool = False,
     pre_scan: bool = True,
     download_lockdir: Optional[Path] = None,
-) -> Union[bool, Any]:
+) -> Union[bool, dict[str, Any]]:
     """Check for the presence or integrity of the local copy of the specified
     test dataset. If the dataset is not available or out of date then attempt
     to download/update it transparently.
 
-    :param verbose:          Show everything as it happens.
     :param pre_scan:         If all files are present and all file sizes match
                              then skip file integrity check and exit quicker.
     :param read_only:        Only use existing data, never download anything.
                              Implies pre_scan=True.
+    :param verbose:          Show everything as it happens.
+    :param verify:           Check all files against integrity information and
+                             fail on any mismatch.
     :returns:                False if the dataset can not be downloaded/updated
                              for any reason.
                              True if the dataset is present and passes a
@@ -173,18 +175,26 @@ def fetch_dataset(
 
     # Acquire lock if required as files may be downloaded/written.
     with download_lock(download_lockdir):
-        _fetch_filelist(filelist)
+        verification_records = _fetch_filelist(filelist)
 
+    # If any errors occured during download then don't trust the dataset.
+    if verify and not all(verification_records):
+        return False
+
+    integrity_info["verify"] = verification_records
     return integrity_info
 
 
-def _fetch_filelist(filelist: list[dict[str, Any]]) -> None:
+def _fetch_filelist(filelist: list[dict[str, Any]]) -> list[dict[str, Any] | None]:
     with requests.Session() as rs:
         pool = concurrent.futures.ThreadPoolExecutor(max_workers=5)
-        pool.map(functools.partial(_fetch_file, rs), filelist)
+        results = pool.map(functools.partial(_fetch_file, rs), filelist)
+        return list(results)
 
 
-def _fetch_file(session: requests.Session, source: dict[str, Any]) -> None:
+def _fetch_file(
+    session: requests.Session, source: dict[str, Any]
+) -> dict[str, Any] | None:
     valid = False
     if source["file"].is_file():
         # verify
@@ -202,18 +212,21 @@ def _fetch_file(session: requests.Session, source: dict[str, Any]) -> None:
         downloaded = True
 
     # verify
+    validation_record = {
+        "size": source["file"].stat().st_size,
+        "hash": file_hash(source["file"]),
+    }
     valid = True
     if source["verify"]:
-        if source["verify"]["size"] != source["file"].stat().st_size:
+        if source["verify"]["size"] != validation_record["size"]:
             print(
                 f"File size mismatch on {source['file']}: "
-                f"{source['file'].stat().st_size}, expected {source['verify']['size']}"
+                f"{validation_record['size']}, expected {source['verify']['size']}"
             )
-        elif source["verify"]["hash"] != file_hash(source["file"]):
+            valid = False
+        elif source["verify"]["hash"] != validation_record["hash"]:
             print(f"File hash mismatch on {source['file']}")
-    else:
-        source["verify"]["size"] = source["file"].stat().st_size
-        source["verify"]["hash"] = file_hash(source["file"])
+            valid = False
 
     # If the file is a tar archive, then decompress
     if source["files"]:
@@ -242,6 +255,11 @@ def _fetch_file(session: requests.Session, source: dict[str, Any]) -> None:
                                 f"Expected file {f} not present "
                                 f"in tar archive {source['file']}"
                             )
+
+    if valid:
+        return validation_record
+    else:
+        return None
 
 
 class DataFetcher:
