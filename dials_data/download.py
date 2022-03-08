@@ -74,19 +74,6 @@ def _file_lock(file_handle):
             _platform_unlock(file_handle)
 
 
-@contextlib.contextmanager
-def download_lock(target_dir: Path):
-    """
-    Obtains a (cooperative) lock on a lockfile in a target directory, so only a
-    single (cooperative) process can enter this context manager at any one time.
-    If the lock is held this will block until the existing lock is released.
-    """
-    target_dir.mkdir(parents=True, exist_ok=True)
-    with target_dir.joinpath(".lock").open(mode="w") as fh:
-        with _file_lock(fh):
-            yield
-
-
 def _download_to_file(session: requests.Session, url: str, pyfile: Path):
     """
     Downloads a single URL to a file.
@@ -169,9 +156,14 @@ def fetch_dataset(
         if read_only:
             return False
 
-    # Acquire lock on directory as files may be downloaded/written.
-    with download_lock(target_dir):
-        verification_records = _fetch_filelist(filelist)
+    # Obtain a (cooperative) lock on a dataset-specific lockfile, so only one
+    # (cooperative) process can enter this context at any one time. The lock
+    # file sits in the directory above the dataset directory, as to not
+    # interfere with dataset files.
+    target_dir.mkdir(parents=True, exist_ok=True)
+    with target_dir.with_name(f".lock.{dataset}").open(mode="w") as fh:
+        with _file_lock(fh):
+            verification_records = _fetch_filelist(filelist)
 
     # If any errors occured during download then don't trust the dataset.
     if verify and not all(verification_records):
