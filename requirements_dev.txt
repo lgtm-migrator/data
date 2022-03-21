@@ -2,7 +2,7 @@ collective.checkdocs==0.2
 coverage==6.3.2
 importlib_resources==5.4.0
 py==1.11.0
-pytest==7.0.1
+pytest==7.1.1
 pyyaml==6.0
 requests==2.27.1
 wheel==0.37.1
