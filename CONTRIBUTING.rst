@@ -51,7 +51,7 @@ If you are proposing a feature:
 Get Started!
 ------------
 
-Ready to contribute? Here's how to set up `dials_data` for local development.
+Ready to contribute? Here's how to set up `dials-data` for local development.
 
 1. Fork the `dials/data` `repository on GitHub <https://github.com/dials/data>`__.
 2. Clone your fork locally::

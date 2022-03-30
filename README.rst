@@ -41,7 +41,7 @@ DIALS Regression Data Manager
 A python package providing data files used for regression tests in
 DIALS_, dxtbx_, xia2_ and related packages.
 
-If you want to know more about what ``dials_data`` is you can
+If you want to know more about what ``dials-data`` is you can
 have a read through the `background information <https://dials-data.readthedocs.io/en/latest/why.html>`__.
 
 For everything else `the main documentation <https://dials-data.readthedocs.io/>`__ is probably the best start.
@@ -52,7 +52,7 @@ Installation
 
 To install this package in a normal Python environment, run::
 
-    pip install dials_data
+    pip install dials-data
 
 and then you can use it with::
 
@@ -60,7 +60,7 @@ and then you can use it with::
 
 If you are in a conda environment you can instead run::
 
-    conda install -c conda-forge dials_data
+    conda install -c conda-forge dials-data
 
 For more details please take a look at the
 `installation and usage page <https://dials-data.readthedocs.io/en/latest/installation.html>`__.
