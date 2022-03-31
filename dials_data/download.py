@@ -15,6 +15,8 @@ from urllib.parse import urlparse
 
 import py.path
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 import dials_data.datasets
 
@@ -175,6 +177,17 @@ def fetch_dataset(
 
 def _fetch_filelist(filelist: list[dict[str, Any]]) -> list[dict[str, Any] | None]:
     with requests.Session() as rs:
+        retry_adapter = HTTPAdapter(
+            max_retries=Retry(
+                total=5,
+                backoff_factor=1,
+                raise_on_status=True,
+                status_forcelist={413, 429, 500, 502, 503, 504},
+            )
+        )
+        rs.mount("http://", retry_adapter)
+        rs.mount("https://", retry_adapter)
+
         pool = concurrent.futures.ThreadPoolExecutor(max_workers=5)
         results = pool.map(functools.partial(_fetch_file, rs), filelist)
         return list(results)
