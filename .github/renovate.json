@@ -3,6 +3,10 @@
     "config:base",
     ":disableDependencyDashboard"
   ],
+  "azure-pipelines": {
+    "description": "Disable azure pipelines manager",
+    "enabled": false
+  },
   "labels": [
     "dependencies"
   ],
