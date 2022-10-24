@@ -5,17 +5,15 @@ description: >
   Powder diffraction data collected by Yun Song at DLS on eBIC's Talos Arctica (m12).
   The sample is a polycrystalline aluminium standard.
 
-  imported.expt was generated with
+  `imported.expt` was generated with:
     $ dials.import $(dials.data get -q aluminium_standard)/0p67_5s_0000.mrc
 
-  eyeballed.expt was generated with dials.powder_calibrate_widget
+  `eyeballed.expt` was generated with: 
+    $ dials.powder_calibrate imported.expt standard="Al" coarse_geom="eyeballed.expt"
 
-  calibrated.expt was generated with
-    starting_file = "eyeballed.expt"
-    test_args = [starting_file, "standard=Al", "eyeball=False"]
-    expt_parameters, user_arguments = parse_args(args=test_args)
-    calibrator = PowderCalibrator(expt_params=expt_parameters, user_args=user_arguments)
-    calibrator.calibrate_with_calibrant(verbose=True)
+  `calibrated.expt` was generated without using the wizard with:
+    $ dials.powder_calibrate eyeballed.expt standard="Al" eyeball=False
+
   
   Used for powder geometry calibration testing.
 
